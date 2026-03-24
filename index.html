@@ -1,0 +1,1883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="apple-touch-icon" sizes="180x180" href="favicon_io/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon_io/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon_io/favicon-16x16.png">
+<link rel="icon" href="favicon_io/favicon.ico">
+<link rel="manifest" href="favicon_io/site.webmanifest">
+<title>Lola Blankets — Training Hub 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root {
+  --sand: #F5EDE3;
+  --cream: #FBF8F4;
+  --caramel: #C4956A;
+  --caramel-light: #D4AD85;
+  --caramel-dark: #A57A52;
+  --dune: #E8D5BF;
+  --ivory: #FAF6F1;
+  --charcoal: #2E2A26;
+  --charcoal-soft: #4A4540;
+  --warm-gray: #8C847C;
+  --blush: #E8C4B0;
+  --sage: #A8B5A0;
+  --sage-light: #D4DDD0;
+  --error: #C27070;
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'DM Sans', -apple-system, sans-serif;
+  --radius: 16px;
+  --radius-sm: 10px;
+  --shadow-soft: 0 2px 20px rgba(46,42,38,0.06);
+  --shadow-card: 0 4px 30px rgba(46,42,38,0.08);
+  --shadow-hover: 0 8px 40px rgba(46,42,38,0.12);
+  --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--cream);
+  color: var(--charcoal);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ─── LOGIN SCREEN ─── */
+.login-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(160deg, var(--sand) 0%, var(--cream) 40%, var(--dune) 100%);
+  position: relative;
+  overflow: hidden;
+}
+.login-screen::before {
+  content: '';
+  position: absolute;
+  top: -20%; right: -10%;
+  width: 600px; height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(196,149,106,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.login-screen::after {
+  content: '';
+  position: absolute;
+  bottom: -15%; left: -5%;
+  width: 500px; height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(168,181,160,0.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+.login-card {
+  background: white;
+  border-radius: 24px;
+  padding: 56px 48px;
+  width: 420px;
+  max-width: 90vw;
+  box-shadow: var(--shadow-card);
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  animation: fadeUp 0.6s ease;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.login-card .brand-icon {
+  width: 64px; height: 64px;
+  background: var(--sand);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 24px;
+  font-size: 28px;
+}
+.login-card h1 {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--charcoal);
+  margin-bottom: 6px;
+  letter-spacing: -0.02em;
+}
+.login-card .subtitle {
+  color: var(--warm-gray);
+  font-size: 14px;
+  margin-bottom: 32px;
+}
+.login-card label {
+  display: block;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--warm-gray);
+  margin-bottom: 8px;
+}
+.login-card select {
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid var(--dune);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: var(--charcoal);
+  background: var(--ivory);
+  appearance: none;
+  cursor: pointer;
+  transition: var(--transition);
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%238C847C' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+}
+.login-card select:focus {
+  outline: none;
+  border-color: var(--caramel);
+  box-shadow: 0 0 0 3px rgba(196,149,106,0.15);
+}
+.login-card .btn-primary {
+  width: 100%;
+  margin-top: 24px;
+  padding: 15px;
+  background: var(--charcoal);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  letter-spacing: 0.02em;
+}
+.login-card .btn-primary:hover {
+  background: var(--caramel-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-hover);
+}
+
+/* ─── APP SHELL ─── */
+.app { display: none; min-height: 100vh; }
+.app.active { display: flex; }
+
+/* ─── SIDEBAR ─── */
+.sidebar {
+  width: 280px;
+  min-height: 100vh;
+  background: white;
+  border-right: 1px solid var(--dune);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  left: 0; top: 0; bottom: 0;
+  z-index: 100;
+  transition: var(--transition);
+}
+.sidebar-header {
+  padding: 24px 20px;
+  border-bottom: 1px solid var(--dune);
+}
+.sidebar-header .brand {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--charcoal);
+  letter-spacing: -0.02em;
+}
+.sidebar-header .user-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 6px 12px;
+  background: var(--sand);
+  border-radius: 20px;
+  font-size: 13px;
+  color: var(--charcoal-soft);
+  font-weight: 500;
+}
+.sidebar-header .user-pill .avatar {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--caramel);
+  color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700;
+}
+.sidebar-nav {
+  flex: 1;
+  padding: 16px 12px;
+  overflow-y: auto;
+}
+.nav-section-title {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--warm-gray);
+  padding: 12px 12px 8px;
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: 14px;
+  color: var(--charcoal-soft);
+  font-weight: 500;
+  position: relative;
+}
+.nav-item:hover { background: var(--sand); }
+.nav-item.active { background: var(--sand); color: var(--charcoal); font-weight: 600; }
+.nav-item .nav-icon { font-size: 16px; width: 22px; text-align: center; }
+.nav-item .progress-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+.nav-item .progress-dot.complete { background: var(--sage); }
+.nav-item .progress-dot.partial { background: var(--caramel-light); }
+.nav-item .progress-dot.none { background: var(--dune); }
+
+.sidebar-footer {
+  padding: 16px 12px;
+  border-top: 1px solid var(--dune);
+}
+.btn-logout {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  background: none;
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--warm-gray);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+}
+.btn-logout:hover { background: var(--sand); color: var(--error); }
+
+/* ─── MAIN CONTENT ─── */
+.main {
+  flex: 1;
+  margin-left: 280px;
+  min-height: 100vh;
+}
+.main-header {
+  padding: 24px 40px;
+  border-bottom: 1px solid var(--dune);
+  background: white;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+.main-header h2 {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.main-header .breadcrumb {
+  font-size: 12px;
+  color: var(--warm-gray);
+  margin-top: 4px;
+}
+.content-area {
+  padding: 32px 40px;
+  max-width: 900px;
+}
+
+/* ─── PAGE VIEWS ─── */
+.page-view { display: none; }
+.page-view.active { display: block; animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* ─── WELCOME / OVERVIEW ─── */
+.welcome-banner {
+  background: linear-gradient(135deg, var(--sand) 0%, var(--dune) 100%);
+  border-radius: var(--radius);
+  padding: 36px 32px;
+  margin-bottom: 28px;
+  position: relative;
+  overflow: hidden;
+}
+.welcome-banner::after {
+  content: '🛋️';
+  position: absolute;
+  right: 32px; top: 50%;
+  transform: translateY(-50%);
+  font-size: 64px;
+  opacity: 0.3;
+}
+.welcome-banner h3 {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.welcome-banner p {
+  color: var(--charcoal-soft);
+  font-size: 14px;
+  line-height: 1.6;
+  max-width: 520px;
+}
+
+.progress-overview {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  margin-bottom: 28px;
+}
+.day-card {
+  background: white;
+  border: 1px solid var(--dune);
+  border-radius: var(--radius-sm);
+  padding: 18px;
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: center;
+}
+.day-card:hover {
+  border-color: var(--caramel);
+  box-shadow: var(--shadow-soft);
+  transform: translateY(-2px);
+}
+.day-card .day-num {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--caramel);
+}
+.day-card .day-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--warm-gray);
+  margin-top: 2px;
+}
+.day-card .day-progress-bar {
+  height: 4px;
+  background: var(--dune);
+  border-radius: 2px;
+  margin-top: 12px;
+  overflow: hidden;
+}
+.day-card .day-progress-bar .fill {
+  height: 100%;
+  background: var(--sage);
+  border-radius: 2px;
+  transition: width 0.5s ease;
+}
+.day-card .day-pct {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--charcoal-soft);
+  margin-top: 6px;
+}
+
+/* ─── DAY CONTENT ─── */
+.section-block {
+  background: white;
+  border: 1px solid var(--dune);
+  border-radius: var(--radius-sm);
+  margin-bottom: 14px;
+  transition: var(--transition);
+}
+.section-block:hover { box-shadow: var(--shadow-soft); }
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  cursor: pointer;
+  user-select: none;
+}
+.section-header .check-box {
+  width: 22px; height: 22px;
+  border: 2px solid var(--dune);
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: var(--transition);
+  cursor: pointer;
+  font-size: 13px;
+  color: transparent;
+}
+.section-header .check-box.checked {
+  background: var(--sage);
+  border-color: var(--sage);
+  color: white;
+}
+.section-header .section-title {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 600;
+}
+.section-header .section-title.completed {
+  text-decoration: line-through;
+  color: var(--warm-gray);
+}
+.section-header .notion-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  background: var(--sand);
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--caramel-dark);
+  text-decoration: none;
+  transition: var(--transition);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.section-header .notion-link:hover {
+  background: var(--caramel);
+  color: white;
+}
+.section-header .expand-btn {
+  background: none; border: none;
+  font-size: 16px;
+  color: var(--warm-gray);
+  cursor: pointer;
+  transition: var(--transition);
+  padding: 4px;
+}
+.section-body {
+  display: none;
+  padding: 0 20px 16px 54px;
+  font-size: 13px;
+  color: var(--charcoal-soft);
+  line-height: 1.7;
+}
+.section-body.open { display: block; }
+.section-body p { margin-bottom: 8px; }
+.section-body a { color: var(--caramel-dark); text-decoration: underline; }
+.section-body ul { padding-left: 18px; margin-bottom: 8px; }
+.section-body ul li { margin-bottom: 4px; }
+
+/* notes inside section */
+.note-area {
+  margin-top: 12px;
+  border-top: 1px solid var(--dune);
+  padding-top: 12px;
+}
+.note-area h5 {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--warm-gray);
+  margin-bottom: 8px;
+}
+.note-input-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.note-input-row textarea {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid var(--dune);
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  resize: vertical;
+  min-height: 40px;
+  transition: var(--transition);
+}
+.note-input-row textarea:focus {
+  outline: none;
+  border-color: var(--caramel);
+}
+.note-input-row .btn-note {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+.btn-private {
+  background: var(--sand);
+  color: var(--charcoal-soft);
+}
+.btn-private:hover { background: var(--dune); }
+.btn-public {
+  background: var(--caramel);
+  color: white;
+}
+.btn-public:hover { background: var(--caramel-dark); }
+
+.note-list { list-style: none; }
+.note-list li {
+  padding: 10px 12px;
+  border-radius: 8px;
+  margin-bottom: 6px;
+  font-size: 13px;
+  line-height: 1.5;
+  position: relative;
+}
+.note-list li.private { background: var(--ivory); border-left: 3px solid var(--dune); }
+.note-list li.public { background: #F0F5EE; border-left: 3px solid var(--sage); }
+.note-list li .note-meta {
+  font-size: 11px;
+  color: var(--warm-gray);
+  margin-top: 4px;
+}
+.note-badge {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-left: 4px;
+}
+.note-badge.private-badge { background: var(--dune); color: var(--charcoal-soft); }
+.note-badge.public-badge { background: var(--sage-light); color: #5A6E52; }
+
+.note-delete {
+  position: absolute;
+  top: 8px; right: 8px;
+  background: none; border: none;
+  color: var(--warm-gray);
+  cursor: pointer;
+  font-size: 14px;
+  opacity: 0;
+  transition: var(--transition);
+}
+.note-list li:hover .note-delete { opacity: 1; }
+.note-delete:hover { color: var(--error); }
+
+/* ─── TEAM DASHBOARD ─── */
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+.team-member-card {
+  background: white;
+  border: 1px solid var(--dune);
+  border-radius: var(--radius-sm);
+  padding: 20px;
+  transition: var(--transition);
+}
+.team-member-card:hover { box-shadow: var(--shadow-soft); }
+.team-member-card .tm-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.tm-avatar {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--caramel);
+  color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; font-weight: 700;
+  font-family: var(--font-display);
+}
+.tm-name { font-weight: 600; font-size: 15px; }
+.tm-overall {
+  font-size: 12px;
+  color: var(--warm-gray);
+}
+.tm-days {
+  display: flex;
+  gap: 6px;
+}
+.tm-day-dot {
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--dune);
+  transition: var(--transition);
+}
+.tm-day-dot.complete { background: var(--sage); }
+.tm-day-dot.partial { background: var(--caramel-light); }
+
+/* ─── KEY LINKS ─── */
+.links-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+}
+.link-card {
+  background: white;
+  border: 1px solid var(--dune);
+  border-radius: var(--radius-sm);
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-decoration: none;
+  color: var(--charcoal);
+  transition: var(--transition);
+}
+.link-card:hover {
+  border-color: var(--caramel);
+  box-shadow: var(--shadow-soft);
+  transform: translateY(-1px);
+}
+.link-icon {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.link-card .link-title { font-weight: 600; font-size: 14px; }
+.link-card .link-desc { font-size: 12px; color: var(--warm-gray); margin-top: 2px; }
+
+/* ─── CALLOUT ─── */
+.callout {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px 18px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 14px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.callout.break { background: #F5F0E8; border: 1px solid var(--dune); }
+.callout.quiz { background: #F0F5EE; border: 1px solid var(--sage-light); }
+.callout .callout-icon { font-size: 18px; flex-shrink: 0; }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 860px) {
+  .sidebar { width: 240px; }
+  .main { margin-left: 240px; }
+  .content-area { padding: 24px 20px; }
+  .progress-overview { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 640px) {
+  .sidebar {
+    transform: translateX(-100%);
+    width: 280px;
+  }
+  .sidebar.open { transform: translateX(0); }
+  .main { margin-left: 0; }
+  .main-header { padding: 16px 20px; }
+  .progress-overview { grid-template-columns: repeat(2, 1fr); }
+  .team-grid { grid-template-columns: 1fr; }
+}
+
+/* ─── LOADING STATE ─── */
+.loading-spinner {
+  display: inline-block;
+  width: 18px; height: 18px;
+  border: 2px solid var(--dune);
+  border-top-color: var(--caramel);
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--warm-gray);
+  font-size: 14px;
+}
+.empty-state .empty-icon { font-size: 40px; margin-bottom: 12px; opacity: 0.5; }
+
+/* ─── NOTIFICATION BADGE ─── */
+.nav-item { position: relative; }
+.notif-badge {
+  margin-left: auto;
+  background: var(--error);
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  padding: 0 5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+/* ─── MENTION AUTOCOMPLETE ─── */
+.mention-dropdown {
+  position: fixed;
+  background: white;
+  border: 1px solid var(--dune);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-card);
+  z-index: 500;
+  overflow: hidden;
+  min-width: 140px;
+}
+.mention-dropdown-item {
+  padding: 8px 14px;
+  font-size: 13px;
+  font-family: var(--font-body);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--charcoal);
+}
+.mention-dropdown-item:hover,
+.mention-dropdown-item.active {
+  background: var(--sand);
+}
+.mention-dropdown-item .md-avatar {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 700;
+  color: white;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ─── NOTIFICATIONS PAGE ─── */
+.notif-list { display: flex; flex-direction: column; gap: 10px; }
+.notif-item {
+  background: white;
+  border: 1px solid var(--dune);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  transition: var(--transition);
+}
+.notif-item.unread {
+  background: var(--sand);
+  border-color: var(--caramel-light);
+}
+.notif-avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  font-size: 14px;
+  font-weight: 700;
+  color: white;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.notif-body { flex: 1; min-width: 0; }
+.notif-body .notif-meta {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--charcoal);
+  margin-bottom: 3px;
+}
+.notif-body .notif-context {
+  font-size: 12px;
+  color: var(--warm-gray);
+  margin-bottom: 6px;
+}
+.notif-body .notif-text {
+  font-size: 13px;
+  color: var(--charcoal-soft);
+  line-height: 1.5;
+  background: var(--cream);
+  border-radius: 6px;
+  padding: 7px 10px;
+}
+.notif-body .notif-text strong { color: var(--caramel-dark); }
+.notif-time {
+  font-size: 11px;
+  color: var(--warm-gray);
+  white-space: nowrap;
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+.notif-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--warm-gray);
+}
+.notif-empty .notif-empty-icon { font-size: 48px; margin-bottom: 12px; opacity: 0.4; }
+.notif-empty p { font-size: 14px; }
+
+.notif-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+.notif-reply-btn {
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--font-body);
+  background: transparent;
+  border: 1.5px solid var(--caramel);
+  color: var(--caramel-dark);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.notif-reply-btn:hover { background: var(--sand); }
+.notif-goto-btn {
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: var(--font-body);
+  background: transparent;
+  border: 1.5px solid var(--dune);
+  color: var(--warm-gray);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.notif-goto-btn:hover { background: var(--sand); color: var(--charcoal); }
+.notif-reply-box {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.notif-reply-box textarea {
+  width: 100%;
+  border: 1.5px solid var(--dune);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  resize: none;
+  min-height: 64px;
+  background: var(--cream);
+  color: var(--charcoal);
+  transition: border-color var(--transition);
+}
+.notif-reply-box textarea:focus {
+  outline: none;
+  border-color: var(--caramel);
+}
+.notif-reply-row {
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
+}
+.notif-send-btn {
+  padding: 7px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--font-body);
+  background: var(--caramel);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.notif-send-btn:hover { background: var(--caramel-dark); }
+.notif-cancel-btn {
+  padding: 7px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: var(--font-body);
+  background: transparent;
+  border: 1.5px solid var(--dune);
+  color: var(--warm-gray);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.notif-cancel-btn:hover { background: var(--sand); }
+
+/* ─── CLEAR ALL BUTTON ─── */
+.btn-clear-day {
+  display: block;
+  margin: 24px auto 0;
+  padding: 10px 24px;
+  background: transparent;
+  border: 1.5px solid var(--error);
+  border-radius: var(--radius-sm);
+  color: var(--error);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.btn-clear-day:hover {
+  background: var(--error);
+  color: white;
+}
+
+/* ─── CONFIRM MODAL ─── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(46,42,38,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.15s ease;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.modal-box {
+  background: white;
+  border-radius: var(--radius);
+  padding: 36px 32px;
+  width: 380px;
+  max-width: 90vw;
+  box-shadow: var(--shadow-hover);
+  text-align: center;
+  animation: fadeUp 0.2s ease;
+}
+.modal-box .modal-icon { font-size: 36px; margin-bottom: 12px; }
+.modal-box h4 {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--charcoal);
+  margin-bottom: 10px;
+}
+.modal-box p {
+  font-size: 14px;
+  color: var(--warm-gray);
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+.modal-btn-cancel {
+  padding: 10px 22px;
+  border: 1.5px solid var(--dune);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--charcoal-soft);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.modal-btn-cancel:hover { background: var(--sand); }
+.modal-btn-confirm {
+  padding: 10px 22px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--error);
+  color: white;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.modal-btn-confirm:hover { background: #a85a5a; }
+</style>
+</head>
+<body>
+
+<!-- ═══════ CONFIRM MODAL ═══════ -->
+<div class="modal-overlay" id="confirmModal" style="display:none;" onclick="closeModal(event)">
+  <div class="modal-box">
+    <div class="modal-icon">⚠️</div>
+    <h4 id="modalTitle">Clear all progress?</h4>
+    <p id="modalBody">This will remove all completed checks for this day. This action cannot be undone.</p>
+    <div class="modal-actions">
+      <button class="modal-btn-cancel" onclick="dismissModal()">Keep Progress</button>
+      <button class="modal-btn-confirm" onclick="confirmClearDay()">Yes, Clear All</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ LOGIN ═══════ -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-card">
+    <div class="brand-icon">🛋️</div>
+    <h1>Lola Blankets</h1>
+    <p class="subtitle">2026 CX Training Hub</p>
+    <label for="userSelect">Who are you?</label>
+    <select id="userSelect">
+      <option value="">Select your name…</option>
+      <option>Alvin</option>
+      <option>Ivan</option>
+      <option>Reena</option>
+      <option>Ely</option>
+      <option>Menjie</option>
+      <option>Nathan</option>
+      <option>Adel</option>
+      <option>Cel</option>
+      <option>Brittni</option>
+      <option>Mike</option>
+    </select>
+    <button class="btn-primary" id="loginBtn">Enter Training Hub</button>
+  </div>
+</div>
+
+<!-- ═══════ APP ═══════ -->
+<div class="app" id="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="brand">Lola Blankets</div>
+      <div class="user-pill">
+        <span class="avatar" id="sidebarAvatar"></span>
+        <span id="sidebarName"></span>
+      </div>
+    </div>
+    <nav class="sidebar-nav" id="sidebarNav"></nav>
+    <div class="sidebar-footer">
+      <button class="btn-logout" id="logoutBtn">⬅ Sign Out</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <header class="main-header">
+      <div class="breadcrumb" id="breadcrumb">Training Hub</div>
+      <h2 id="pageTitle">Overview</h2>
+    </header>
+    <div class="content-area" id="contentArea"></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════
+// SUPABASE INIT
+// ═══════════════════════════════════════════════════
+const SUPABASE_URL = 'https://gcrzncpodyjpfevramof.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjcnpuY3BvZHlqcGZldnJhbW9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQyODkwNzAsImV4cCI6MjA4OTg2NTA3MH0.Oe0qw9wxMvS1SSrobEWI68MWBS7kYmxz_KFmLOaaKvY';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let currentUser = null;
+let progressData = {};   // { sectionId: true/false }
+let allProgress = {};    // { userName: { sectionId: true/false } }
+let allNotes = [];       // from DB
+let notifications = [];  // { id, sender, section_id, note_text, read, created_at }
+
+// ═══════════════════════════════════════════════════
+// COURSE DATA — straight from the Notion pages
+// ═══════════════════════════════════════════════════
+const COURSE = [
+  {
+    id: 'day1', day: 1, title: 'Day 1 — Welcome & Orientation',
+    notionUrl: 'https://lolablankets.notion.site/314bbc9c4dde804aba45efa9aeaa4f3a',
+    sections: [
+      { id: 'd1_rules', title: 'House Rules (Camera, Slack Status, Notifications)', desc: 'Review the core house rules: cameras on during meetings, Slack notifications enabled, and always ping your trainer if you hit a wall.' },
+      { id: 'd1_icebreaker', title: 'Ice Breaker — Random Questions', desc: 'Pick a number 1-5 and answer a fun question to kick things off with the team.' },
+      { id: 'd1_presentation', title: 'Lola Onboarding Presentation', desc: 'Go through the CX Welcome New Hire Deck covering mission, values, and your role.', link: 'https://drive.google.com/file/d/1Hh6-c-z9guXcAqW_HzfHEj_3NfPbdtdM/view?resourcekey' },
+      { id: 'd1_history', title: 'Short History of Lola Blankets + Org Chart', desc: 'Learn the Lola Blankets origin story and review the full org chart (CX, Marketing, People & Culture, Commercial).', link: 'https://lolablankets.com/pages/the-lola-blanket-story' },
+      { id: 'd1_tools_overview', title: 'Overview of All 12 Tools', desc: 'Quick introduction to: Chrome, Gmail/Calendar, Slack, Gorgias, Shopify, VeraCore, RiseAI, Loop Returns, FreshDesk, Notion, Aircall, Google Sheets.' },
+      { id: 'd1_slack', title: 'Deep Dive: Slack Channels', desc: 'Learn all 9 key channels: #lola-cozy-crew (escalation format), #updates-customercare, #lola-phone-team, #im-online, #out-of-stock, #cx-product-feedback, #customer-highlights, #cx-daily-assignments, #cx-warehouse-delay-escalations.' },
+      { id: 'd1_gorgias_intro', title: 'Gorgias Introduction + Academy Sign-Up', desc: 'Access the ticketing system and sign up for Gorgias Academy courses.', link: 'https://www.gorgias.com/customer-resources/academy' },
+      { id: 'd1_shopify_intro', title: 'Shopify Introduction', desc: 'Introduction to Shopify as the main CX order management tool.', link: 'https://admin.shopify.com/store/the-lola-blanket/orders' },
+      { id: 'd1_veracore_intro', title: 'VeraCore Introduction', desc: 'Introduction to the warehouse-facing order management tool.', link: 'https://rhu309.veracore.com/VeraCore/Home/' },
+      { id: 'd1_riseai', title: 'Rise.AI — Gift Card Database', desc: 'Introduction to Rise.AI for managing gift cards, store credits, and Lola Loyalty.', link: 'https://dashboard.rise-ai.com/' },
+      { id: 'd1_loop', title: 'Loop Returns — Return Center', desc: '30-day return window, Loop portal, and backup manual returns in Shopify.', link: 'https://admin.loopreturns.com/home' },
+      { id: 'd1_freshdesk', title: 'FreshDesk — Warehouse Tickets', desc: 'Portal for contacting Elevate 3PL. Shared visibility, duplicate prevention, and ticket template.', link: 'https://elevate3pl.freshdesk.com/support/tickets' },
+      { id: 'd1_notion', title: 'Notion Knowledge Base', desc: 'Bookmark the official Knowledge Base Center.', link: 'https://lolablankets.notion.site/lola-blankets-customer-care' },
+      { id: 'd1_goodtoknow', title: 'Good-to-Know: OOS Button, Cart vs Checkout, Upsells, Loyalty', desc: 'OOS button process, shopping cart vs checkout page differences, upsell #1 and #2, and the Lola Loyalty points program ($10 credit per $100 spent).' },
+      { id: 'd1_sitetour', title: 'Site Tour — Bestsellers, Collabs, New Arrivals', desc: 'Tour lolablankets.com: bestsellers (Antique Ivory, Desert Dune, Caramel N\' Cream), collaborations, Lola Luxe collection, newsletter sign-up.', link: 'https://lolablankets.com/collections/collaborations' },
+      { id: 'd1_meetngreet', title: 'Meet & Greet with CX Team', desc: 'Join the Weekly Pow-Wow if possible to meet the full CX team.' },
+      { id: 'd1_gorgias_academy', title: 'LAST HOUR: Gorgias Academy / HR Tasks', desc: 'Final hour: Onshore team completes JustWorks HR tasks. Non-phone team completes Gorgias Academy.' },
+    ]
+  },
+  {
+    id: 'day2', day: 2, title: 'Day 2 — FAQ, Definitions & Core Tools',
+    notionUrl: 'https://lolablankets.notion.site/314bbc9c4dde8003aabedcf561d3fd04',
+    sections: [
+      { id: 'd2_quiz1', title: '🏁 Day 1 Recap Quiz', desc: 'Take the Day 1 quiz to validate what you learned yesterday.', link: 'https://forms.gle/haacS87mk6Rypqhp9', isQuiz: true },
+      { id: 'd2_faq', title: 'Site FAQ Deep Review', desc: 'Review all 8 FAQ categories: My Orders, Shipping, Products, Returns, General, Lola Loyalty, Gifting, and More FAQs.', link: 'https://lolablankets.com/pages/help-center' },
+      { id: 'd2_definitions', title: 'Definition of Terms: Mispick, RTS, DNR, PONR', desc: 'Master the key scenarios: Mispick (validate→replace→gift), Lost/DNR (wait→claim→replace), Wrong Address/RTS (educate→update→reschedule), PONR (inform→deliver→return later).' },
+      { id: 'd2_shipping', title: 'Shipping & Processing Times', desc: 'Standard: 2-3 days processing + 5-7 shipping. Expedited: 1-2 + 1-2. Holiday peak: 4-7 + 5-7 standard, 1-2 + 1-2 express.' },
+      { id: 'd2_gorgias_deep', title: 'Gorgias Deep Dive', desc: 'Omnichannel queue (Phone Squad vs Main Views), Macros (⚡ pre-made responses), Tags & Contact Reasons, Internal Notes, Snoozing, Merging. Critical: CS Master Sheet Widget for Mispick/Shipping/Odor tracking.', link: 'https://lolablankets.notion.site/314bbc9c4dde80628c70dfc1636c96c2' },
+      { id: 'd2_gorgias_academy2', title: 'Gorgias Academy: Shopify Agent 101-105', desc: 'Complete the foundational Gorgias Academy modules if not done yet.', link: 'https://academy.gorgias.com/trainings' },
+      { id: 'd2_shopify_deep', title: 'Shopify Operations Deep Dive', desc: 'Order lifecycle, Draft Orders & Invoicing, Order Management (Timeline, Tags), Returns & Exchanges (DO NOT restock, do not refund shipping).', link: 'https://lolablankets.notion.site/314bbc9c4dde80628c70dfc1636c96c2' },
+    ]
+  },
+  {
+    id: 'day3', day: 3, title: 'Day 3 — VeraCore, Returns & Orders',
+    notionUrl: 'https://lolablankets.notion.site/314bbc9c4dde80a79daace5521af775b',
+    sections: [
+      { id: 'd3_veracore', title: 'VeraCore Deep Dive', desc: 'Learn: how VC orders relate to Shopify, warehouse sites and HOOP, searching/intercepting orders, updating shipping, upgrading shipping, canceling, checking status/sub-status, checking if shipped.', link: 'https://lolablankets.notion.site/314bbc9c4dde808d9861e893d175004c' },
+      { id: 'd3_loop', title: 'Loop Returns Deep Dive', desc: 'Status types, return outcomes (Refund w/ $15 fee, Exchange, Store Credit), return shipping status, when/why to waive the $15 fee.', link: 'https://lolablankets.notion.site/314bbc9c4dde8010bdabd5742e22c2ca' },
+      { id: 'd3_managing_returns', title: 'Managing Loop Returns', desc: 'Regular vs extended return window. Requirements: unused, unwashed, original packaging. Return via Loop vs manual return via Shopify.', link: 'https://lolablankets.notion.site/193bbc9c4dde80fd8e65c712cb068b7c' },
+      { id: 'd3_exchange', title: 'Exchanges', desc: 'Exchange via Loop portal and Exchange via Shopify (manual). Learn when/why to use the manual option.' },
+      { id: 'd3_refund', title: 'Refunds — Partial & Full', desc: 'Partial: for price matching or minor issues without return. Full: only for final-resort delivery failures or approved returns — use automated workflows.' },
+      { id: 'd3_edit_orders', title: 'Edit Orders — Order Modification Policy', desc: 'SOP for modifying orders.', link: 'https://lolablankets.notion.site/SOP-Order-Modification-Policy-223bbc9c4dde80b28082e65954769e3f' },
+      { id: 'd3_discounts', title: 'Discounts — Item-Level vs Order-Level', desc: 'Item-level targets WHAT is bought (BOGO, clearance). Order-level targets HOW MUCH the customer spends (flat or percentage off subtotal).' },
+      { id: 'd3_quiz', title: '🏁 Day 2-3 Quiz', desc: 'Test your knowledge on VeraCore, Returns, Refunds, and Discounts.', link: 'https://forms.gle/U5LCPEajgZSMYd117', isQuiz: true },
+    ]
+  },
+  {
+    id: 'day4', day: 4, title: 'Day 4 — Advanced Tools & Quality Issues',
+    notionUrl: 'https://lolablankets.notion.site/314bbc9c4dde806ab9c8e88102a1cfda',
+    sections: [
+      { id: 'd4_notion_sop', title: 'Notion SOP: Order Modification Policy', desc: 'Updated October 2025 order modification SOP.', link: 'https://lolablankets.notion.site/SOP-Order-Modification-Policy-Updated-Oct-2025-below-223bbc9c4dde80b28082e65954769e3f' },
+      { id: 'd4_aircall', title: 'Aircall Workspace', desc: 'Centralized hub for incoming/outgoing calls, SMS, and customer interactions. Integrates with Gorgias.' },
+      { id: 'd4_riseai_deep', title: 'Rise.AI Deep Dive', desc: 'Customer Tab, Activity Tab, Adjust Balance, Issue Store Credit, Loyalty Card vs Bulk, Help Center.', link: 'https://help.rise.ai/en/' },
+      { id: 'd4_freshdesk_deep', title: 'Elevate FreshDesk Deep Dive', desc: 'When and how to use FreshDesk. Peak season protocols (Marked/Picked orders cannot be modified).', link: 'https://lolablankets.notion.site/ELEVATE-Freshdesk-Ticketing-System-198bbc9c4dde806e8f62f3175745e999' },
+      { id: 'd4_contact_reasons', title: 'Self-Study: Gorgias Contact Reasons', desc: 'Review all contact reasons in Gorgias independently. Ask your trainer for clarity on anything.' },
+      { id: 'd4_sizes', title: 'Product Sizes & Weights', desc: 'Bookmark the sizes reference for answering dimension and weight questions.', link: 'https://lolablankets.com/pages/help-center?hcUrl=%2Fen-US%2Fwhat-are-your-different-lola-blanket-and-pillow-sizes-826447' },
+      { id: 'd4_quality', title: 'Quality Issues Overview', desc: 'Holes, matted/loss of softness, shedding, smell/odor, stains/weird dye, loose threads, size variation (±2 inches). Learn the macros for each.' },
+      { id: 'd4_replacement', title: 'Replacement Policy', desc: 'Within 100 days: no questions asked. 100+ days: use Past 100 Days macro. 1+ year: use Purchased 1+ Year macro. Always check original order, spend history, and replacement frequency.' },
+      { id: 'd4_shipping_issues', title: 'Shipping Issues & Resolutions', desc: 'Damaged in transit, stuck/lost, missing item, DNR (stolen), RTS, stuck on confirmed. All resolution flows and when to add express shipping.', link: 'https://www.loom.com/share/6e9d35f36b3847c69a9eb599a2dd7569' },
+      { id: 'd4_quiz', title: '🏁 Day 3-4 Quiz', desc: 'Quiz covering quality issues, shipping resolutions, and advanced tools.', link: 'https://forms.gle/aRajs4RAzzi3MPxQ9', isQuiz: true },
+    ]
+  },
+  {
+    id: 'day5', day: 5, title: 'Day 5 — SOPs, Policies & Wrap-Up',
+    notionUrl: 'https://lolablankets.notion.site/314bbc9c4dde8016a6b4e98fd645e4a7',
+    sections: [
+      { id: 'd5_notion_articles', title: 'Read Key Notion Articles & Updates Channel Posts', desc: 'Review important articles and updates posted in the Slack updates channel. Links are in the Day 5 Notion page.' },
+      { id: 'd5_rts_sop', title: 'SOP: Package Returned to Sender', desc: 'Send "Confirm Your Address — Return to Sender" macro → confirm address → process replacement → send "New Order Created" macro → close.' },
+      { id: 'd5_payment_failed', title: 'New Payment Failed Macros', desc: 'Two macros: Item(s) Out of Stock (cancel + refund + guide to reorder) and Order Released (release hold, order ships, no action needed).' },
+      { id: 'd5_returns_reminder', title: 'Returns Workflows Reminder', desc: 'Always send Loop portal link first. Only process manual Shopify return if customer reports issues with the portal.' },
+      { id: 'd5_wholesale', title: 'Wholesale Policy & Macros', desc: 'Not accepting new wholesale accounts. Three macros: Not Accepting Wholesale, Forward to Wholesale, and Wholesale vs Trade vs Bulk/Corporate explanation.' },
+      { id: 'd5_split_payments', title: 'Policy: No Split Payments', desc: 'No split payments of any kind. Gift cards only if they cover the full order total. Use the new macro.' },
+      { id: 'd5_security', title: 'Security Alert — Phishing Notice', desc: 'Do NOT open any links from accounting@lolablankets.com or suspicious emails. 2FA has been enabled.' },
+      { id: 'd5_shipping_rates', title: 'Shipping Rates & Free Shipping Macros', desc: 'Free economy on orders $250+ in 48 states. Express is weight-based. Reference the CX Master Sheet shipping cost table.', link: 'https://docs.google.com/spreadsheets/d/1njBnsjwDWZycxRYVYo6uQGrrLUuzSnP9dqxJFqoNLQI/edit?pli=1&gid=850063552#gid=850063552' },
+      { id: 'd5_gorgias_tips', title: 'Gorgias Tip: Send vs Send & Close', desc: 'Use "Send" only — avoid "Send & Close" as it overrides snoozes. Leave tickets open when assigning to another agent.' },
+      { id: 'd5_macro_familiarity', title: 'Macro Familiarity & Practice', desc: 'Learn how to search for macros in Gorgias, using keywords, and combining macros + freehand + LLM.', link: 'https://docs.google.com/spreadsheets/d/1njBnsjwDWZycxRYVYo6uQGrrLUuzSnP9dqxJFqoNLQI/edit?gid=74280627#gid=74280627' },
+      { id: 'd5_macro_quiz', title: '💯 Interactive Macro Lookup Quiz', desc: 'Take the interactive quiz to test your macro lookup skills.', link: 'https://lola-macro-quiz.netlify.app/', isQuiz: true },
+    ]
+  }
+];
+
+const TEAM_MEMBERS = ['Alvin','Ivan','Reena','Ely','Menjie','Nathan','Adel','Cel','Brittni','Mike'];
+const AVATAR_COLORS = ['#C4956A','#A8B5A0','#D4AD85','#E8C4B0','#8C847C','#A57A52','#6B8F5E','#C27070','#7A9DAF','#C4956A'];
+
+// ═══════════════════════════════════════════════════
+// INIT DB — auto-create tables if they don't exist
+// ═══════════════════════════════════════════════════
+async function initDB() {
+  // Try creating tables via RPC or just test connectivity
+  try {
+    await sb.from('training_progress').select('id').limit(1);
+  } catch(e) {
+    // Table doesn't exist — we'll create it
+    console.log('Tables may need creation. Run the SQL migration.');
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// DATA LOADING
+// ═══════════════════════════════════════════════════
+async function loadProgress() {
+  try {
+    const { data } = await sb.from('training_progress').select('*').eq('user_name', currentUser);
+    progressData = {};
+    if (data) data.forEach(r => { progressData[r.section_id] = r.completed; });
+  } catch(e) { console.warn('Progress load failed, using local', e); }
+}
+
+async function loadAllProgress() {
+  try {
+    const { data } = await sb.from('training_progress').select('*');
+    allProgress = {};
+    if (data) data.forEach(r => {
+      if (!allProgress[r.user_name]) allProgress[r.user_name] = {};
+      allProgress[r.user_name][r.section_id] = r.completed;
+    });
+  } catch(e) { console.warn('All progress load failed', e); }
+}
+
+async function loadNotes() {
+  try {
+    const { data } = await sb.from('training_notes').select('*').order('created_at', { ascending: false });
+    allNotes = data || [];
+  } catch(e) { console.warn('Notes load failed', e); allNotes = []; }
+}
+
+async function loadNotifications() {
+  try {
+    const { data } = await sb.from('training_notifications')
+      .select('*').eq('recipient', currentUser).order('created_at', { ascending: false });
+    notifications = data || [];
+  } catch(e) { console.warn('Notifications load failed', e); notifications = []; }
+}
+
+function parseMentions(text) {
+  const matches = [...text.matchAll(/@(\w+)/g)].map(m => m[1]);
+  return [...new Set(matches)].filter(name => TEAM_MEMBERS.includes(name) && name !== currentUser);
+}
+
+async function markNotificationsRead() {
+  const hasUnread = notifications.some(n => !n.read);
+  if (!hasUnread) return;
+  notifications.forEach(n => n.read = true);
+  updateNotificationBadge();
+  try {
+    await sb.from('training_notifications').update({ read: true })
+      .eq('recipient', currentUser).eq('read', false);
+  } catch(e) { console.warn('Mark read failed', e); }
+}
+
+function updateNotificationBadge() {
+  const badge = document.getElementById('notifBadge');
+  if (!badge) return;
+  const count = notifications.filter(n => !n.read).length;
+  if (count > 0) {
+    badge.textContent = count;
+    badge.style.display = 'inline-flex';
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
+async function toggleSection(sectionId) {
+  const newVal = !progressData[sectionId];
+  progressData[sectionId] = newVal;
+  if (!allProgress[currentUser]) allProgress[currentUser] = {};
+  allProgress[currentUser][sectionId] = newVal;
+  renderCurrentPage();
+  updateSidebarDots();
+
+  try {
+    if (newVal) {
+      await sb.from('training_progress').upsert({
+        user_name: currentUser, section_id: sectionId, completed: true
+      }, { onConflict: 'user_name,section_id' });
+    } else {
+      await sb.from('training_progress').delete().eq('user_name', currentUser).eq('section_id', sectionId);
+    }
+  } catch(e) { console.warn('Toggle save failed', e); }
+}
+
+async function saveNote(sectionId, text, isPublic) {
+  const note = {
+    user_name: currentUser,
+    section_id: sectionId,
+    note_text: text,
+    is_public: isPublic,
+    created_at: new Date().toISOString()
+  };
+  try {
+    const { data } = await sb.from('training_notes').insert(note).select();
+    if (data && data[0]) allNotes.unshift(data[0]);
+    else allNotes.unshift({ ...note, id: Date.now() }); // fallback
+  } catch(e) {
+    allNotes.unshift({ ...note, id: Date.now() });
+  }
+
+  // Insert notifications for any @mentions
+  const mentioned = parseMentions(text);
+  if (mentioned.length > 0) {
+    const notifRows = mentioned.map(name => ({
+      recipient: name, sender: currentUser,
+      section_id: sectionId, note_text: text
+    }));
+    try {
+      await sb.from('training_notifications').insert(notifRows);
+    } catch(e) { console.warn('Notification insert failed', e); }
+  }
+
+  renderCurrentPage();
+}
+
+async function deleteNote(noteId) {
+  allNotes = allNotes.filter(n => n.id !== noteId);
+  renderCurrentPage();
+  try { await sb.from('training_notes').delete().eq('id', noteId); } catch(e) {}
+}
+
+// ═══════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════
+let currentPage = 'overview';
+
+function navigate(page) {
+  currentPage = page;
+  renderCurrentPage();
+  updateSidebarActive();
+  // scroll to top
+  document.getElementById('contentArea').scrollTo?.({ top: 0 });
+  window.scrollTo({ top: 0 });
+}
+
+function navigateToSection(dayId, sectionId) {
+  navigate(dayId);
+  setTimeout(() => {
+    const body = document.getElementById('body_' + sectionId);
+    if (!body) return;
+    body.classList.add('open');
+    body.closest('.section-block').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const ta = document.getElementById('note_input_' + sectionId);
+    if (ta) ta.focus();
+  }, 80);
+}
+
+function toggleReplyBox(notifId) {
+  const box = document.getElementById('reply_' + notifId);
+  if (!box) return;
+  const isOpen = box.style.display !== 'none';
+  box.style.display = isOpen ? 'none' : 'flex';
+  if (!isOpen) {
+    const n = notifications.find(n => String(n.id) === String(notifId));
+    const ta = document.getElementById('reply_input_' + notifId);
+    if (ta && n) {
+      if (!ta.value) ta.value = '@' + n.sender + ' ';
+      ta.focus();
+      ta.setSelectionRange(ta.value.length, ta.value.length);
+    }
+  }
+}
+
+async function sendReply(notifId, sectionId, senderName) {
+  const ta = document.getElementById('reply_input_' + notifId);
+  if (!ta) return;
+  const text = ta.value.trim();
+  if (!text) return;
+  const btn = ta.closest('.notif-reply-box').querySelector('.notif-send-btn');
+  btn.textContent = 'Sending…';
+  btn.disabled = true;
+  await saveNote(sectionId, text, true);
+  ta.value = '';
+  document.getElementById('reply_' + notifId).style.display = 'none';
+}
+
+function updateSidebarActive() {
+  document.querySelectorAll('.nav-item').forEach(n => {
+    n.classList.toggle('active', n.dataset.page === currentPage);
+  });
+}
+
+function updateSidebarDots() {
+  COURSE.forEach(day => {
+    const dot = document.querySelector(`.nav-item[data-page="${day.id}"] .progress-dot`);
+    if (!dot) return;
+    const total = day.sections.length;
+    const done = day.sections.filter(s => progressData[s.id]).length;
+    dot.className = 'progress-dot ' + (done === total ? 'complete' : done > 0 ? 'partial' : 'none');
+  });
+}
+
+// ═══════════════════════════════════════════════════
+// RENDERING
+// ═══════════════════════════════════════════════════
+function buildSidebar() {
+  const nav = document.getElementById('sidebarNav');
+  let html = `
+    <div class="nav-section-title">Home</div>
+    <div class="nav-item active" data-page="overview" onclick="navigate('overview')">
+      <span class="nav-icon">🏠</span> Overview
+    </div>
+    <div class="nav-item" data-page="team" onclick="navigate('team')">
+      <span class="nav-icon">👥</span> Team Progress
+    </div>
+    <div class="nav-item" data-page="notifications" onclick="navigate('notifications')">
+      <span class="nav-icon">🔔</span> Notifications
+      <span class="notif-badge" id="notifBadge" style="display:none">0</span>
+    </div>
+    <div class="nav-section-title">Training Days</div>
+  `;
+  COURSE.forEach(day => {
+    html += `
+      <div class="nav-item" data-page="${day.id}" onclick="navigate('${day.id}')">
+        <span class="nav-icon">📖</span> Day ${day.day}
+        <span class="progress-dot none"></span>
+      </div>
+    `;
+  });
+  html += `
+    <div class="nav-section-title">Resources</div>
+    <div class="nav-item" data-page="links" onclick="navigate('links')">
+      <span class="nav-icon">🔗</span> Key Links
+    </div>
+  `;
+  nav.innerHTML = html;
+}
+
+function renderCurrentPage() {
+  const area = document.getElementById('contentArea');
+  const title = document.getElementById('pageTitle');
+  const bc = document.getElementById('breadcrumb');
+
+  if (currentPage === 'overview') {
+    title.textContent = 'Overview';
+    bc.textContent = 'Training Hub';
+    area.innerHTML = renderOverview();
+  } else if (currentPage === 'team') {
+    title.textContent = 'Team Progress';
+    bc.textContent = 'Training Hub → Team';
+    area.innerHTML = renderTeam();
+  } else if (currentPage === 'notifications') {
+    title.textContent = 'Notifications';
+    bc.textContent = 'Training Hub → Notifications';
+    area.innerHTML = renderNotifications();
+    markNotificationsRead();
+  } else if (currentPage === 'links') {
+    title.textContent = 'Key Links';
+    bc.textContent = 'Training Hub → Resources';
+    area.innerHTML = renderLinks();
+  } else {
+    const day = COURSE.find(d => d.id === currentPage);
+    if (day) {
+      title.textContent = day.title;
+      bc.textContent = `Training Hub → Day ${day.day}`;
+      area.innerHTML = renderDay(day);
+    }
+  }
+  updateSidebarDots();
+}
+
+function getDayProgress(day) {
+  const total = day.sections.length;
+  const done = day.sections.filter(s => progressData[s.id]).length;
+  return { total, done, pct: total > 0 ? Math.round((done / total) * 100) : 0 };
+}
+
+function renderOverview() {
+  let cardsHtml = COURSE.map(day => {
+    const p = getDayProgress(day);
+    return `
+      <div class="day-card" onclick="navigate('${day.id}')">
+        <div class="day-num">${day.day}</div>
+        <div class="day-label">Day ${day.day}</div>
+        <div class="day-progress-bar"><div class="fill" style="width:${p.pct}%"></div></div>
+        <div class="day-pct">${p.done}/${p.total} complete</div>
+      </div>
+    `;
+  }).join('');
+
+  const totalSections = COURSE.reduce((s, d) => s + d.sections.length, 0);
+  const totalDone = COURSE.reduce((s, d) => s + d.sections.filter(sec => progressData[sec.id]).length, 0);
+  const overallPct = totalSections > 0 ? Math.round((totalDone / totalSections) * 100) : 0;
+
+  return `
+    <div class="welcome-banner">
+      <h3>Welcome back, ${currentUser}!</h3>
+      <p>You're ${overallPct}% through the training (${totalDone}/${totalSections} sections). Pick up where you left off or explore a new day.</p>
+    </div>
+    <div class="progress-overview">${cardsHtml}</div>
+    <a href="https://lolablankets.notion.site/Welcome-to-Lola-Blankets-2026-Training-30abbc9c4dde802da267f3f8ce5f3fbd" target="_blank" class="link-card" style="margin-top:8px;">
+      <div class="link-icon" style="background:var(--sand);">📋</div>
+      <div>
+        <div class="link-title">Open Full Training in Notion</div>
+        <div class="link-desc">View the original training document with all embedded content</div>
+      </div>
+    </a>
+  `;
+}
+
+function renderDay(day) {
+  const p = getDayProgress(day);
+  let html = `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+      <div>
+        <div style="font-size:13px;color:var(--warm-gray);margin-bottom:4px;">${p.done} of ${p.total} sections completed</div>
+        <div style="width:200px;height:6px;background:var(--dune);border-radius:3px;overflow:hidden;">
+          <div style="height:100%;width:${p.pct}%;background:var(--sage);border-radius:3px;transition:width 0.4s ease;"></div>
+        </div>
+      </div>
+      <a href="${day.notionUrl}" target="_blank" class="notion-link" style="padding:8px 16px;font-size:12px;">
+        Open in Notion ↗
+      </a>
+    </div>
+  `;
+
+  day.sections.forEach(sec => {
+    const checked = progressData[sec.id] ? 'checked' : '';
+    const completedClass = progressData[sec.id] ? 'completed' : '';
+    const sectionNotes = allNotes.filter(n => n.section_id === sec.id && (n.is_public || n.user_name === currentUser));
+
+    let linkHtml = '';
+    if (sec.link) {
+      linkHtml = `<a href="${sec.link}" target="_blank" class="notion-link" onclick="event.stopPropagation();">Open ↗</a>`;
+    }
+
+    let notesHtml = '';
+    if (sectionNotes.length > 0) {
+      notesHtml = sectionNotes.map(n => {
+        const cls = n.is_public ? 'public' : 'private';
+        const badge = n.is_public
+          ? '<span class="note-badge public-badge">Public</span>'
+          : '<span class="note-badge private-badge">Private</span>';
+        const canDelete = n.user_name === currentUser;
+        const deleteBtn = canDelete ? `<button class="note-delete" onclick="deleteNote(${n.id})" title="Delete">✕</button>` : '';
+        const time = new Date(n.created_at).toLocaleString('en-US', { month:'short', day:'numeric', hour:'numeric', minute:'2-digit' });
+        return `
+          <li class="${cls}">
+            ${deleteBtn}
+            ${n.note_text}
+            <div class="note-meta">${n.user_name} · ${time} ${badge}</div>
+          </li>
+        `;
+      }).join('');
+    }
+
+    html += `
+      <div class="section-block">
+        <div class="section-header">
+          <div class="check-box ${checked}" onclick="event.stopPropagation();toggleSection('${sec.id}')">✓</div>
+          <span class="section-title ${completedClass}" onclick="toggleExpand(this)">${sec.isQuiz ? '' : ''}${sec.title}</span>
+          ${linkHtml}
+          <button class="expand-btn" onclick="toggleExpand(this)">▾</button>
+        </div>
+        <div class="section-body" id="body_${sec.id}">
+          <p>${sec.desc}</p>
+          <div class="note-area">
+            <h5>Notes</h5>
+            <div class="note-input-row">
+              <textarea id="note_input_${sec.id}" placeholder="Write a note…"></textarea>
+              <button class="btn-note btn-private" onclick="submitNote('${sec.id}', false)">🔒 Private</button>
+              <button class="btn-note btn-public" onclick="submitNote('${sec.id}', true)">🌐 Public</button>
+            </div>
+            <ul class="note-list">${notesHtml}</ul>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+
+  const anyChecked = day.sections.some(s => progressData[s.id]);
+  if (anyChecked) {
+    html += `<button class="btn-clear-day" onclick="clearDayProgress('${day.id}')">Clear All Progress for Day ${day.day}</button>`;
+  }
+
+  return html;
+}
+
+function renderTeam() {
+  let html = '<div class="team-grid">';
+  TEAM_MEMBERS.forEach((name, i) => {
+    const userProg = allProgress[name] || {};
+    const totalSections = COURSE.reduce((s, d) => s + d.sections.length, 0);
+    const done = Object.values(userProg).filter(Boolean).length;
+    const pct = totalSections > 0 ? Math.round((done / totalSections) * 100) : 0;
+
+    const dayDots = COURSE.map(day => {
+      const dayTotal = day.sections.length;
+      const dayDone = day.sections.filter(s => userProg[s.id]).length;
+      const cls = dayDone === dayTotal ? 'complete' : dayDone > 0 ? 'partial' : '';
+      return `<div class="tm-day-dot ${cls}" title="Day ${day.day}: ${dayDone}/${dayTotal}"></div>`;
+    }).join('');
+
+    const isMe = name === currentUser;
+
+    html += `
+      <div class="team-member-card" style="${isMe ? 'border-color:var(--caramel);' : ''}">
+        <div class="tm-header">
+          <div class="tm-avatar" style="background:${AVATAR_COLORS[i]}">${name[0]}</div>
+          <div>
+            <div class="tm-name">${name} ${isMe ? '(you)' : ''}</div>
+            <div class="tm-overall">${pct}% complete · ${done} sections</div>
+          </div>
+        </div>
+        <div class="tm-days">${dayDots}</div>
+      </div>
+    `;
+  });
+  html += '</div>';
+  return html;
+}
+
+function renderNotifications() {
+  if (notifications.length === 0) {
+    return `
+      <div class="notif-empty">
+        <div class="notif-empty-icon">🔔</div>
+        <p>No notifications yet.<br>You'll be notified when a teammate mentions you in a note.</p>
+      </div>
+    `;
+  }
+
+  const items = notifications.map(n => {
+    const senderIdx = TEAM_MEMBERS.indexOf(n.sender);
+    const avatarColor = senderIdx >= 0 ? AVATAR_COLORS[senderIdx] : 'var(--warm-gray)';
+    const unreadClass = n.read ? '' : 'unread';
+
+    // Look up section/day name and dayId
+    let context = n.section_id;
+    let dayId = '';
+    for (const day of COURSE) {
+      const sec = day.sections.find(s => s.id === n.section_id);
+      if (sec) { context = `Day ${day.day} · ${sec.title}`; dayId = day.id; break; }
+    }
+
+    // Bold @mentions in note text
+    const safeText = n.note_text
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    const highlighted = safeText.replace(/@(\w+)/g, (_, name) =>
+      TEAM_MEMBERS.includes(name) ? `<strong>@${name}</strong>` : `@${name}`
+    );
+
+    const time = new Date(n.created_at).toLocaleString('en-US', {
+      month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'
+    });
+
+    return `
+      <div class="notif-item ${unreadClass}">
+        <div class="notif-avatar" style="background:${avatarColor}">${n.sender[0]}</div>
+        <div class="notif-body">
+          <div class="notif-meta">${n.sender} mentioned you</div>
+          <div class="notif-context">${context}</div>
+          <div class="notif-text">${highlighted}</div>
+          <div class="notif-actions">
+            <button class="notif-reply-btn" onclick="toggleReplyBox('${n.id}')">↩ Reply</button>
+            ${dayId ? `<button class="notif-goto-btn" onclick="navigateToSection('${dayId}','${n.section_id}')">Go to section ↗</button>` : ''}
+          </div>
+          <div class="notif-reply-box" id="reply_${n.id}" style="display:none">
+            <textarea id="reply_input_${n.id}" placeholder="Write a reply…" rows="3"></textarea>
+            <div class="notif-reply-row">
+              <button class="notif-cancel-btn" onclick="toggleReplyBox('${n.id}')">Cancel</button>
+              <button class="notif-send-btn" onclick="sendReply('${n.id}','${n.section_id}','${n.sender}')">Send Reply</button>
+            </div>
+          </div>
+        </div>
+        <div class="notif-time">${time}</div>
+      </div>
+    `;
+  }).join('');
+
+  return `<div class="notif-list">${items}</div>`;
+}
+
+function renderLinks() {
+  const links = [
+    { icon: '🎫', bg: '#F5EDE3', title: 'Gorgias', desc: 'Ticketing system', url: 'https://lolablankets.gorgias.com/app/home' },
+    { icon: '🛒', bg: '#F0F5EE', title: 'Shopify Admin', desc: 'Order management', url: 'https://admin.shopify.com/store/the-lola-blanket/orders' },
+    { icon: '🏭', bg: '#FFF3E8', title: 'VeraCore', desc: 'Warehouse orders', url: 'https://rhu309.veracore.com/VeraCore/Home/' },
+    { icon: '🎁', bg: '#F5EDE3', title: 'Rise.AI', desc: 'Gift cards & store credit', url: 'https://dashboard.rise-ai.com/' },
+    { icon: '↩️', bg: '#F0F5EE', title: 'Loop Returns Admin', desc: 'Return center', url: 'https://admin.loopreturns.com/home' },
+    { icon: '📦', bg: '#FFF3E8', title: 'Loop Return Portal', desc: 'Customer-facing returns', url: 'https://returns.lolablankets.com/#/' },
+    { icon: '🔧', bg: '#F5EDE3', title: 'FreshDesk', desc: 'Warehouse tickets', url: 'https://elevate3pl.freshdesk.com/support/tickets' },
+    { icon: '📚', bg: '#F0F5EE', title: 'Notion Knowledge Base', desc: 'Official KB', url: 'https://lolablankets.notion.site/lola-blankets-customer-care' },
+    { icon: '📊', bg: '#FFF3E8', title: 'Inventory Dashboard', desc: 'Stock levels', url: 'https://docs.google.com/spreadsheets/d/1sSg5-NBu_MoD71w8ZJYomOP0FAOS6yJF-qgUXoEilSQ/edit?gid=415430016#gid=415430016' },
+    { icon: '📋', bg: '#F5EDE3', title: 'CX Master File', desc: 'CS Master Sheet', url: 'https://docs.google.com/spreadsheets/d/1njBnsjwDWZycxRYVYo6uQGrrLUuzSnP9dqxJFqoNLQI/edit?gid=1452597157#gid=1452597157' },
+    { icon: '📅', bg: '#F0F5EE', title: 'Agent Schedule', desc: 'Team schedule', url: 'https://docs.google.com/spreadsheets/d/1VTb1T8OsjOGUy-Czp0NqAzw8e7pX1QzNE-TBb6uZyO0/edit?pli=1&gid=955228886#gid=955228886' },
+    { icon: '❓', bg: '#FFF3E8', title: 'Help Center', desc: 'Public FAQ', url: 'https://lolablankets.com/pages/help-center' },
+    { icon: '📋', bg: '#F5EDE3', title: 'Gorgias Academy', desc: 'Training modules', url: 'https://www.gorgias.com/customer-resources/academy' },
+    { icon: '📏', bg: '#F0F5EE', title: 'Warehouse Contact Guide', desc: 'When to contact Elevate', url: 'https://lolablankets.notion.site/Warehouse-Contact-Guidelines-Peak-Season-Prep-2025-295bbc9c4dde80aa83bfeccdf7eedaea' },
+    { icon: '📐', bg: '#FFF3E8', title: 'Product Sizes & Weights', desc: 'Blanket dimensions', url: 'https://lolablankets.com/pages/help-center?hcUrl=%2Fen-US%2Fwhat-are-your-different-lola-blanket-and-pillow-sizes-826447' },
+    { icon: '🧩', bg: '#F5EDE3', title: 'Macro Lookup Quiz', desc: 'Interactive practice', url: 'https://lola-macro-quiz.netlify.app/' },
+  ];
+
+  return `
+    <div class="links-grid">
+      ${links.map(l => `
+        <a href="${l.url}" target="_blank" class="link-card">
+          <div class="link-icon" style="background:${l.bg}">${l.icon}</div>
+          <div>
+            <div class="link-title">${l.title}</div>
+            <div class="link-desc">${l.desc}</div>
+          </div>
+        </a>
+      `).join('')}
+    </div>
+  `;
+}
+
+// ═══════════════════════════════════════════════════
+// CLEAR DAY MODAL
+// ═══════════════════════════════════════════════════
+let _pendingClearDayId = null;
+
+function clearDayProgress(dayId) {
+  const day = COURSE.find(d => d.id === dayId);
+  const checked = day.sections.filter(s => progressData[s.id]).length;
+  if (checked === 0) return;
+  _pendingClearDayId = dayId;
+  document.getElementById('modalTitle').textContent = `Clear Day ${day.day} progress?`;
+  document.getElementById('modalBody').textContent =
+    `This will remove all ${checked} completed check${checked !== 1 ? 's' : ''} for "${day.title}". This cannot be undone.`;
+  document.getElementById('confirmModal').style.display = 'flex';
+}
+
+function dismissModal() {
+  document.getElementById('confirmModal').style.display = 'none';
+  _pendingClearDayId = null;
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('confirmModal')) dismissModal();
+}
+
+async function confirmClearDay() {
+  const dayId = _pendingClearDayId;
+  dismissModal();
+  if (!dayId) return;
+  const day = COURSE.find(d => d.id === dayId);
+  const sectionIds = day.sections.map(s => s.id);
+
+  sectionIds.forEach(id => {
+    progressData[id] = false;
+    if (allProgress[currentUser]) allProgress[currentUser][id] = false;
+  });
+  renderCurrentPage();
+  updateSidebarDots();
+
+  try {
+    await sb.from('training_progress')
+      .delete()
+      .eq('user_name', currentUser)
+      .in('section_id', sectionIds);
+  } catch(e) { console.warn('Clear day failed', e); }
+}
+
+// ═══════════════════════════════════════════════════
+// UI HELPERS
+// ═══════════════════════════════════════════════════
+function toggleExpand(el) {
+  const block = el.closest('.section-block');
+  const body = block.querySelector('.section-body');
+  body.classList.toggle('open');
+}
+
+function submitNote(sectionId, isPublic) {
+  const input = document.getElementById('note_input_' + sectionId);
+  const text = input.value.trim();
+  if (!text) return;
+  saveNote(sectionId, text, isPublic);
+  input.value = '';
+}
+
+// ═══════════════════════════════════════════════════
+// LOGIN / LOGOUT
+// ═══════════════════════════════════════════════════
+document.getElementById('loginBtn').addEventListener('click', async () => {
+  const name = document.getElementById('userSelect').value;
+  if (!name) return;
+  currentUser = name;
+  localStorage.setItem('lola_user', name);
+
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('app').classList.add('active');
+  document.getElementById('sidebarAvatar').textContent = name[0];
+  document.getElementById('sidebarName').textContent = name;
+
+  buildSidebar();
+  await Promise.all([loadProgress(), loadAllProgress(), loadNotes(), loadNotifications()]);
+  renderCurrentPage();
+  updateSidebarDots();
+  updateNotificationBadge();
+});
+
+document.getElementById('logoutBtn').addEventListener('click', () => {
+  currentUser = null;
+  localStorage.removeItem('lola_user');
+  document.getElementById('app').classList.remove('active');
+  document.getElementById('loginScreen').style.display = '';
+  document.getElementById('userSelect').value = '';
+});
+
+// ═══════════════════════════════════════════════════
+// @MENTION AUTOCOMPLETE
+// ═══════════════════════════════════════════════════
+(function() {
+  let dropdown = null;
+  let activeTextarea = null;
+  let mentionStart = -1;
+
+  function createDropdown() {
+    if (dropdown) return;
+    dropdown = document.createElement('div');
+    dropdown.className = 'mention-dropdown';
+    dropdown.style.display = 'none';
+    document.body.appendChild(dropdown);
+  }
+
+  function hideDropdown() {
+    if (dropdown) dropdown.style.display = 'none';
+    mentionStart = -1;
+    activeTextarea = null;
+  }
+
+  function getMentionQuery(ta) {
+    const val = ta.value;
+    const pos = ta.selectionStart;
+    const before = val.slice(0, pos);
+    const match = before.match(/@(\w*)$/);
+    return match ? { query: match[1], atPos: pos - match[0].length } : null;
+  }
+
+  function showDropdown(ta, query, atPos) {
+    createDropdown();
+    activeTextarea = ta;
+    mentionStart = atPos;
+
+    const matches = TEAM_MEMBERS.filter(n =>
+      n !== currentUser && n.toLowerCase().startsWith(query.toLowerCase())
+    );
+
+    if (matches.length === 0) { hideDropdown(); return; }
+
+    dropdown.innerHTML = matches.slice(0, 6).map((name, i) => {
+      const idx = TEAM_MEMBERS.indexOf(name);
+      const color = idx >= 0 ? AVATAR_COLORS[idx] : 'var(--warm-gray)';
+      return `<div class="mention-dropdown-item" data-name="${name}">
+        <span class="md-avatar" style="background:${color}">${name[0]}</span>${name}
+      </div>`;
+    }).join('');
+
+    const rect = ta.getBoundingClientRect();
+    dropdown.style.top = (rect.bottom + 4) + 'px';
+    dropdown.style.left = rect.left + 'px';
+    dropdown.style.display = 'block';
+  }
+
+  function insertMention(name) {
+    if (!activeTextarea) return;
+    const val = activeTextarea.value;
+    const pos = activeTextarea.selectionStart;
+    const before = val.slice(0, mentionStart);
+    const after = val.slice(pos);
+    activeTextarea.value = before + '@' + name + ' ' + after;
+    const newPos = mentionStart + name.length + 2;
+    activeTextarea.setSelectionRange(newPos, newPos);
+    activeTextarea.focus();
+    hideDropdown();
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    createDropdown();
+
+    document.getElementById('contentArea').addEventListener('input', e => {
+      if (e.target.tagName !== 'TEXTAREA') return;
+      const result = getMentionQuery(e.target);
+      if (result) showDropdown(e.target, result.query, result.atPos);
+      else hideDropdown();
+    });
+
+    document.addEventListener('click', e => {
+      const item = e.target.closest('.mention-dropdown-item');
+      if (item) { insertMention(item.dataset.name); return; }
+      if (dropdown && !dropdown.contains(e.target)) hideDropdown();
+    });
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') hideDropdown();
+    });
+  });
+})();
+
+// Auto-login if returning
+(async () => {
+  const saved = localStorage.getItem('lola_user');
+  if (saved && TEAM_MEMBERS.includes(saved)) {
+    document.getElementById('userSelect').value = saved;
+    document.getElementById('loginBtn').click();
+  }
+})();
+</script>
+</body>
+</html>
