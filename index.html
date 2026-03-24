@@ -452,6 +452,24 @@ body {
   background: var(--caramel);
   color: white;
 }
+.day-notion-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 7px 14px;
+  background: var(--sage);
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: white;
+  text-decoration: none;
+  letter-spacing: 0.03em;
+  transition: var(--transition);
+}
+.day-notion-link:hover {
+  background: #8fa387;
+  color: white;
+}
 .section-header .expand-btn {
   background: none; border: none;
   font-size: 16px;
@@ -1669,7 +1687,7 @@ function renderDay(day) {
           <div style="height:100%;width:${p.pct}%;background:var(--sage);border-radius:3px;transition:width 0.4s ease;"></div>
         </div>
       </div>
-      <a href="${day.notionUrl}" target="_blank" class="notion-link" style="padding:8px 16px;font-size:12px;">
+      <a href="${day.notionUrl}" target="_blank" class="day-notion-link">
         Open in Notion ↗
       </a>
     </div>
