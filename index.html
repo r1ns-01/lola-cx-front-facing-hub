@@ -605,6 +605,26 @@ body {
   font-weight: 600;
   min-width: 10px;
 }
+.reaction-btn { position: relative; }
+.reaction-btn[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(40,35,30,0.88);
+  color: #fff;
+  padding: 4px 9px;
+  border-radius: 6px;
+  font-size: 11px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 200;
+  font-weight: 400;
+}
+.reaction-btn[data-tooltip]:hover::after { opacity: 1; }
 
 /* ─── TEAM DASHBOARD ─── */
 .team-grid {
@@ -1314,9 +1334,11 @@ const REACTION_DEFS = [
 function renderNoteReactions(noteId) {
   return `<div class="note-reactions" id="reactions_${noteId}">` +
     REACTION_DEFS.map(({ type, emoji }) => {
-      const reacted = noteReactions.some(r => String(r.note_id) === String(noteId) && r.user_name === currentUser && r.reaction_type === type);
-      const count = noteReactions.filter(r => String(r.note_id) === String(noteId) && r.reaction_type === type).length;
-      return `<button class="reaction-btn ${reacted ? 'reacted' : ''}" onclick="toggleReaction(${noteId},'${type}')" title="${type}">
+      const reactors = noteReactions.filter(r => String(r.note_id) === String(noteId) && r.reaction_type === type).map(r => r.user_name);
+      const reacted = reactors.includes(currentUser);
+      const count = reactors.length;
+      const tooltip = count > 0 ? reactors.join(', ') : emoji;
+      return `<button class="reaction-btn ${reacted ? 'reacted' : ''}" onclick="toggleReaction(${noteId},'${type}')" data-tooltip="${tooltip}">
         ${emoji}<span class="reaction-count">${count > 0 ? count : ''}</span>
       </button>`;
     }).join('') +
@@ -1336,6 +1358,21 @@ async function toggleReaction(noteId, type) {
     } catch(e) {
       console.warn('Reaction insert failed', e);
       noteReactions.push({ ...newReaction, id: Date.now() });
+    }
+
+    // Notify note author if it's not the reactor's own note
+    const note = allNotes.find(n => String(n.id) === String(noteId));
+    if (note && note.user_name !== currentUser) {
+      const emojiMap = { thumbsup: '👍', heart: '❤️', ok: '👌', thanks: '🙏' };
+      const notifText = `[react:${type}] ${note.note_text}`;
+      try {
+        await sb.from('training_notifications').insert({
+          recipient: note.user_name,
+          sender: currentUser,
+          section_id: note.section_id,
+          note_text: notifText
+        });
+      } catch(e) { console.warn('Reaction notification failed', e); }
     }
   }
   const bar = document.getElementById('reactions_' + noteId);
@@ -1546,6 +1583,9 @@ function renderCurrentPage() {
   const title = document.getElementById('pageTitle');
   const bc = document.getElementById('breadcrumb');
 
+  // Preserve which section bodies are currently open
+  const openBodyIds = [...document.querySelectorAll('.section-body.open')].map(el => el.id);
+
   if (currentPage === 'overview') {
     title.textContent = 'Overview';
     bc.textContent = 'Training Hub';
@@ -1571,6 +1611,12 @@ function renderCurrentPage() {
       area.innerHTML = renderDay(day);
     }
   }
+
+  // Restore open sections after re-render
+  openBodyIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.add('open');
+  });
   updateSidebarDots();
 }
 
@@ -1751,11 +1797,21 @@ function renderNotifications() {
     }
 
     // Bold @mentions in note text
-    const safeText = n.note_text
-      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-    const highlighted = safeText.replace(/@(\w+)/g, (_, name) =>
-      TEAM_MEMBERS.includes(name) ? `<strong>@${name}</strong>` : `@${name}`
-    );
+    // Detect reaction notifications vs mention notifications
+    const reactionMatch = n.note_text.match(/^\[react:(\w+)\] ([\s\S]*)$/);
+    const emojiMap = { thumbsup: '👍', heart: '❤️', ok: '👌', thanks: '🙏' };
+    let metaLabel, displayText;
+    if (reactionMatch) {
+      const [, rType, originalText] = reactionMatch;
+      metaLabel = `${n.sender} reacted ${emojiMap[rType] || '🙂'} to your note`;
+      displayText = originalText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    } else {
+      metaLabel = `${n.sender} mentioned you`;
+      const safeText = n.note_text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      displayText = safeText.replace(/@(\w+)/g, (_, name) =>
+        TEAM_MEMBERS.includes(name) ? `<strong>@${name}</strong>` : `@${name}`
+      );
+    }
 
     const time = new Date(n.created_at).toLocaleString('en-US', {
       month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'
@@ -1768,9 +1824,9 @@ function renderNotifications() {
         </div>
         <div class="notif-avatar" style="background:${avatarColor}">${n.sender[0]}</div>
         <div class="notif-body">
-          <div class="notif-meta">${n.sender} mentioned you</div>
+          <div class="notif-meta">${metaLabel}</div>
           <div class="notif-context">${context}</div>
-          <div class="notif-text">${highlighted}</div>
+          <div class="notif-text">${displayText}</div>
           <div class="notif-actions">
             <button class="notif-reply-btn" onclick="toggleReplyBox('${n.id}')">↩ Reply</button>
             ${dayId ? `<button class="notif-goto-btn" onclick="navigateToSection('${dayId}','${n.section_id}')">Go to section ↗</button>` : ''}
