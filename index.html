@@ -571,6 +571,41 @@ body {
 .note-list li:hover .note-delete { opacity: 1; }
 .note-delete:hover { color: var(--error); }
 
+/* ─── NOTE REACTIONS ─── */
+.note-reactions {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+.reaction-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px;
+  border-radius: 20px;
+  border: 1.5px solid var(--dune);
+  background: white;
+  font-size: 13px;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: var(--transition);
+  color: var(--charcoal-soft);
+  line-height: 1;
+}
+.reaction-btn:hover { background: var(--sand); border-color: var(--caramel-light); }
+.reaction-btn.reacted {
+  background: var(--sand);
+  border-color: var(--caramel);
+  color: var(--caramel-dark);
+  font-weight: 600;
+}
+.reaction-btn .reaction-count {
+  font-size: 11px;
+  font-weight: 600;
+  min-width: 10px;
+}
+
 /* ─── TEAM DASHBOARD ─── */
 .team-grid {
   display: grid;
@@ -1125,6 +1160,7 @@ let currentUser = null;
 let progressData = {};   // { sectionId: true/false }
 let allProgress = {};    // { userName: { sectionId: true/false } }
 let allNotes = [];       // from DB
+let noteReactions = [];  // { id, note_id, user_name, reaction_type }
 let notifications = [];  // { id, sender, section_id, note_text, read, created_at }
 
 // ═══════════════════════════════════════════════════
@@ -1259,6 +1295,51 @@ async function loadNotes() {
     const { data } = await sb.from('training_notes').select('*').order('created_at', { ascending: false });
     allNotes = data || [];
   } catch(e) { console.warn('Notes load failed', e); allNotes = []; }
+}
+
+async function loadNoteReactions() {
+  try {
+    const { data } = await sb.from('note_reactions').select('*');
+    noteReactions = data || [];
+  } catch(e) { console.warn('Reactions load failed', e); noteReactions = []; }
+}
+
+const REACTION_DEFS = [
+  { type: 'thumbsup', emoji: '👍' },
+  { type: 'heart',    emoji: '❤️' },
+  { type: 'ok',       emoji: '👌' },
+  { type: 'thanks',   emoji: '🙏' },
+];
+
+function renderNoteReactions(noteId) {
+  return `<div class="note-reactions" id="reactions_${noteId}">` +
+    REACTION_DEFS.map(({ type, emoji }) => {
+      const reacted = noteReactions.some(r => String(r.note_id) === String(noteId) && r.user_name === currentUser && r.reaction_type === type);
+      const count = noteReactions.filter(r => String(r.note_id) === String(noteId) && r.reaction_type === type).length;
+      return `<button class="reaction-btn ${reacted ? 'reacted' : ''}" onclick="toggleReaction(${noteId},'${type}')" title="${type}">
+        ${emoji}<span class="reaction-count">${count > 0 ? count : ''}</span>
+      </button>`;
+    }).join('') +
+  `</div>`;
+}
+
+async function toggleReaction(noteId, type) {
+  const existing = noteReactions.find(r => String(r.note_id) === String(noteId) && r.user_name === currentUser && r.reaction_type === type);
+  if (existing) {
+    noteReactions = noteReactions.filter(r => r !== existing);
+    try { await sb.from('note_reactions').delete().eq('id', existing.id); } catch(e) { console.warn('Reaction delete failed', e); }
+  } else {
+    const newReaction = { note_id: noteId, user_name: currentUser, reaction_type: type };
+    try {
+      const { data } = await sb.from('note_reactions').insert(newReaction).select();
+      noteReactions.push(data ? data[0] : { ...newReaction, id: Date.now() });
+    } catch(e) {
+      console.warn('Reaction insert failed', e);
+      noteReactions.push({ ...newReaction, id: Date.now() });
+    }
+  }
+  const bar = document.getElementById('reactions_' + noteId);
+  if (bar) bar.outerHTML = renderNoteReactions(noteId);
 }
 
 async function loadNotifications() {
@@ -1568,11 +1649,13 @@ function renderDay(day) {
         const canDelete = n.user_name === currentUser;
         const deleteBtn = canDelete ? `<button class="note-delete" onclick="deleteNote(${n.id})" title="Delete">✕</button>` : '';
         const time = new Date(n.created_at).toLocaleString('en-US', { month:'short', day:'numeric', hour:'numeric', minute:'2-digit' });
+        const reactionsHtml = n.is_public ? renderNoteReactions(n.id) : '';
         return `
           <li class="${cls}">
             ${deleteBtn}
             ${n.note_text}
             <div class="note-meta">${n.user_name} · ${time} ${badge}</div>
+            ${reactionsHtml}
           </li>
         `;
       }).join('');
@@ -1869,7 +1952,7 @@ document.getElementById('loginBtn').addEventListener('click', async () => {
   document.getElementById('sidebarName').textContent = name;
 
   buildSidebar();
-  await Promise.all([loadProgress(), loadAllProgress(), loadNotes(), loadNotifications()]);
+  await Promise.all([loadProgress(), loadAllProgress(), loadNotes(), loadNoteReactions(), loadNotifications()]);
   renderCurrentPage();
   updateSidebarDots();
   updateNotificationBadge();

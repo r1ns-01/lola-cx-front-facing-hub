@@ -99,6 +99,30 @@ CREATE POLICY "Allow all deletes on notifications"
   ON training_notifications FOR DELETE
   USING (true);
 
+-- 4. Note reactions table (👍 ❤️ 👌 🙏 on public notes)
+CREATE TABLE IF NOT EXISTS note_reactions (
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  note_id BIGINT NOT NULL,
+  user_name TEXT NOT NULL,
+  reaction_type TEXT NOT NULL CHECK (reaction_type IN ('thumbsup','heart','ok','thanks')),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  UNIQUE(note_id, user_name, reaction_type)
+);
+
+ALTER TABLE note_reactions ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Allow all reads on reactions" ON note_reactions;
+CREATE POLICY "Allow all reads on reactions"
+  ON note_reactions FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Allow all inserts on reactions" ON note_reactions;
+CREATE POLICY "Allow all inserts on reactions"
+  ON note_reactions FOR INSERT WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Allow all deletes on reactions" ON note_reactions;
+CREATE POLICY "Allow all deletes on reactions"
+  ON note_reactions FOR DELETE USING (true);
+
 -- 5. Indexes for performance
 CREATE INDEX IF NOT EXISTS idx_progress_user ON training_progress(user_name);
 CREATE INDEX IF NOT EXISTS idx_progress_section ON training_progress(section_id);
@@ -106,3 +130,5 @@ CREATE INDEX IF NOT EXISTS idx_notes_section ON training_notes(section_id);
 CREATE INDEX IF NOT EXISTS idx_notes_user ON training_notes(user_name);
 CREATE INDEX IF NOT EXISTS idx_notif_recipient ON training_notifications(recipient);
 CREATE INDEX IF NOT EXISTS idx_notif_read ON training_notifications(recipient, read);
+CREATE INDEX IF NOT EXISTS idx_reactions_note ON note_reactions(note_id);
+CREATE INDEX IF NOT EXISTS idx_reactions_user ON note_reactions(user_name);
