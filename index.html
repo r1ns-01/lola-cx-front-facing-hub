@@ -850,6 +850,59 @@ body {
   transition: var(--transition);
 }
 .notif-goto-btn:hover { background: var(--sand); color: var(--charcoal); }
+.notif-delete-btn {
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: var(--font-body);
+  background: transparent;
+  border: 1.5px solid var(--dune);
+  color: var(--warm-gray);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: var(--transition);
+  margin-left: auto;
+}
+.notif-delete-btn:hover { background: #fdecea; border-color: #e57373; color: #c0392b; }
+
+/* Bulk action toolbar */
+.notif-bulk-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  padding: 8px 12px;
+  background: var(--sand);
+  border: 1px solid var(--dune);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  color: var(--charcoal);
+}
+.notif-bulk-bar label { display: flex; align-items: center; gap: 6px; cursor: pointer; font-weight: 600; }
+.notif-bulk-bar input[type="checkbox"] { width: 15px; height: 15px; cursor: pointer; accent-color: var(--caramel); }
+.notif-bulk-delete-btn {
+  margin-left: auto;
+  padding: 5px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--font-body);
+  background: #fdecea;
+  border: 1.5px solid #e57373;
+  color: #c0392b;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.notif-bulk-delete-btn:hover { background: #e57373; color: white; }
+.notif-bulk-delete-btn:disabled { opacity: 0.4; cursor: default; }
+.notif-item { position: relative; }
+.notif-checkbox-wrap {
+  display: flex;
+  align-items: flex-start;
+  padding-top: 2px;
+  flex-shrink: 0;
+}
+.notif-checkbox-wrap input[type="checkbox"] { width: 15px; height: 15px; cursor: pointer; accent-color: var(--caramel); }
 .notif-reply-box {
   margin-top: 10px;
   display: flex;
@@ -1626,7 +1679,10 @@ function renderNotifications() {
     });
 
     return `
-      <div class="notif-item ${unreadClass}">
+      <div class="notif-item ${unreadClass}" data-notif-id="${n.id}">
+        <div class="notif-checkbox-wrap">
+          <input type="checkbox" class="notif-select-cb" data-id="${n.id}" onchange="updateBulkBar()">
+        </div>
         <div class="notif-avatar" style="background:${avatarColor}">${n.sender[0]}</div>
         <div class="notif-body">
           <div class="notif-meta">${n.sender} mentioned you</div>
@@ -1635,6 +1691,7 @@ function renderNotifications() {
           <div class="notif-actions">
             <button class="notif-reply-btn" onclick="toggleReplyBox('${n.id}')">↩ Reply</button>
             ${dayId ? `<button class="notif-goto-btn" onclick="navigateToSection('${dayId}','${n.section_id}')">Go to section ↗</button>` : ''}
+            <button class="notif-delete-btn" onclick="deleteNotification('${n.id}')">✕ Remove</button>
           </div>
           <div class="notif-reply-box" id="reply_${n.id}" style="display:none">
             <textarea id="reply_input_${n.id}" placeholder="Write a reply…" rows="3"></textarea>
@@ -1649,7 +1706,53 @@ function renderNotifications() {
     `;
   }).join('');
 
-  return `<div class="notif-list">${items}</div>`;
+  return `
+    <div class="notif-bulk-bar">
+      <label>
+        <input type="checkbox" id="notifSelectAll" onchange="toggleSelectAll(this.checked)">
+        Select all
+      </label>
+      <button class="notif-bulk-delete-btn" id="bulkDeleteBtn" onclick="deleteSelectedNotifications()" disabled>Delete selected</button>
+    </div>
+    <div class="notif-list">${items}</div>
+  `;
+}
+
+function updateBulkBar() {
+  const cbs = document.querySelectorAll('.notif-select-cb');
+  const checked = document.querySelectorAll('.notif-select-cb:checked');
+  const bulkBtn = document.getElementById('bulkDeleteBtn');
+  const selectAll = document.getElementById('notifSelectAll');
+  if (bulkBtn) bulkBtn.disabled = checked.length === 0;
+  if (selectAll) selectAll.checked = cbs.length > 0 && checked.length === cbs.length;
+}
+
+function toggleSelectAll(checked) {
+  document.querySelectorAll('.notif-select-cb').forEach(cb => cb.checked = checked);
+  updateBulkBar();
+}
+
+async function deleteNotification(id) {
+  notifications = notifications.filter(n => String(n.id) !== String(id));
+  updateNotificationBadge();
+  const el = document.querySelector(`.notif-item[data-notif-id="${id}"]`);
+  if (el) el.remove();
+  const list = document.querySelector('.notif-list');
+  if (list && !list.querySelector('.notif-item')) {
+    document.querySelector('.notif-bulk-bar')?.remove();
+    list.innerHTML = `<div class="notif-empty"><div class="notif-empty-icon">🔔</div><p>No notifications yet.<br>You'll be notified when a teammate mentions you in a note.</p></div>`;
+  }
+  updateBulkBar();
+  try {
+    await sb.from('training_notifications').delete().eq('id', id);
+  } catch(e) { console.warn('Delete notification failed', e); }
+}
+
+async function deleteSelectedNotifications() {
+  const checked = [...document.querySelectorAll('.notif-select-cb:checked')];
+  if (!checked.length) return;
+  const ids = checked.map(cb => cb.dataset.id);
+  for (const id of ids) await deleteNotification(id);
 }
 
 function renderLinks() {
