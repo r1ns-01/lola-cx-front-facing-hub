@@ -1135,6 +1135,23 @@ body {
   </div>
 </div>
 
+<!-- ═══════ PASSWORD MODAL ═══════ -->
+<div id="passwordModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9999;display:none;align-items:center;justify-content:center;">
+  <div style="background:var(--cream);border-radius:16px;padding:2rem 2.5rem;max-width:360px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,0.18);text-align:center;">
+    <div style="font-size:2rem;margin-bottom:0.5rem;">🔐</div>
+    <h3 style="margin:0 0 0.25rem;color:var(--espresso);font-size:1.2rem;">Admin Access</h3>
+    <p style="margin:0 0 1.25rem;color:var(--warm-gray);font-size:0.9rem;">Enter your password to continue as Ivan</p>
+    <input type="password" id="passwordInput" placeholder="Password" autocomplete="current-password"
+      style="width:100%;box-sizing:border-box;padding:0.65rem 1rem;border:1.5px solid var(--linen);border-radius:8px;font-size:1rem;background:white;color:var(--espresso);outline:none;margin-bottom:0.5rem;"
+      onkeydown="if(event.key==='Enter')document.getElementById('passwordSubmit').click()">
+    <p id="passwordError" style="color:#c0392b;font-size:0.85rem;margin:0 0 0.75rem;display:none;">Incorrect password. Please try again.</p>
+    <div style="display:flex;gap:0.75rem;justify-content:center;margin-top:0.5rem;">
+      <button onclick="closePasswordModal()" style="padding:0.6rem 1.2rem;border:1.5px solid var(--linen);background:white;color:var(--warm-gray);border-radius:8px;cursor:pointer;font-size:0.9rem;">Cancel</button>
+      <button id="passwordSubmit" onclick="submitPassword()" style="padding:0.6rem 1.4rem;background:var(--caramel);color:white;border:none;border-radius:8px;cursor:pointer;font-size:0.9rem;font-weight:600;">Continue</button>
+    </div>
+  </div>
+</div>
+
 <!-- ═══════ LOGIN ═══════ -->
 <div class="login-screen" id="loginScreen">
   <div class="login-card">
@@ -1593,6 +1610,14 @@ function buildSidebar() {
       <span class="nav-icon">🔗</span> Key Links
     </div>
   `;
+  if (currentUser === 'Ivan') {
+    html += `
+      <div class="nav-section-title">Admin</div>
+      <div class="nav-item" data-page="comments-hub" onclick="navigate('comments-hub')" style="color:var(--sage);">
+        <span class="nav-icon">📋</span> Comments Hub
+      </div>
+    `;
+  }
   nav.innerHTML = html;
 }
 
@@ -1621,6 +1646,10 @@ function renderCurrentPage() {
     title.textContent = 'Key Links';
     bc.textContent = 'Training Hub → Resources';
     area.innerHTML = renderLinks();
+  } else if (currentPage === 'comments-hub' && currentUser === 'Ivan') {
+    title.textContent = 'Comments Hub';
+    bc.textContent = 'Training Hub → Admin → Comments Hub';
+    area.innerHTML = renderCommentsHub();
   } else {
     const day = COURSE.find(d => d.id === currentPage);
     if (day) {
@@ -1948,6 +1977,97 @@ function renderLinks() {
 }
 
 // ═══════════════════════════════════════════════════
+// COMMENTS HUB (Ivan-only admin view)
+// ═══════════════════════════════════════════════════
+function renderCommentsHub() {
+  const publicNotes = allNotes.filter(n => n.is_public);
+
+  // Build section lookup
+  const sectionMap = {};
+  COURSE.forEach(day => {
+    day.sections.forEach(sec => {
+      sectionMap[sec.id] = { title: sec.title, day: day.day };
+    });
+  });
+
+  // Filter controls state (read from DOM if exists)
+  const filterUser = typeof _hubFilterUser !== 'undefined' ? _hubFilterUser : '';
+  const filterDay  = typeof _hubFilterDay  !== 'undefined' ? _hubFilterDay  : '';
+
+  let filtered = publicNotes;
+  if (filterUser) filtered = filtered.filter(n => n.user_name === filterUser);
+  if (filterDay)  filtered = filtered.filter(n => {
+    const sec = sectionMap[n.section_id];
+    return sec && String(sec.day) === filterDay;
+  });
+
+  const authors = [...new Set(publicNotes.map(n => n.user_name))].sort();
+  const days = [...new Set(COURSE.map(d => d.day))];
+
+  const userOptions = authors.map(u =>
+    `<option value="${u}" ${filterUser === u ? 'selected' : ''}>${u}</option>`
+  ).join('');
+
+  const dayOptions = days.map(d =>
+    `<option value="${d}" ${filterDay === String(d) ? 'selected' : ''}>Day ${d}</option>`
+  ).join('');
+
+  const notesHtml = filtered.length === 0
+    ? `<div style="text-align:center;color:var(--warm-gray);padding:3rem 0;">No public comments found.</div>`
+    : filtered.map(n => {
+        const sec = sectionMap[n.section_id];
+        const secLabel = sec ? `Day ${sec.day} — ${sec.title}` : n.section_id;
+        const time = new Date(n.created_at).toLocaleString('en-US', { month:'short', day:'numeric', year:'numeric', hour:'numeric', minute:'2-digit' });
+        const idx = TEAM_MEMBERS.indexOf(n.user_name);
+        const avatarColor = idx >= 0 ? AVATAR_COLORS[idx] : 'var(--warm-gray)';
+        const reactionSummary = REACTION_DEFS.map(({ type, emoji }) => {
+          const count = noteReactions.filter(r => String(r.note_id) === String(n.id) && r.reaction_type === type).length;
+          return count > 0 ? `${emoji} ${count}` : '';
+        }).filter(Boolean).join('  ');
+        return `
+          <div style="background:white;border:1px solid var(--linen);border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:0.85rem;">
+            <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.5rem;">
+              <div style="width:30px;height:30px;border-radius:50%;background:${avatarColor};color:white;font-weight:700;font-size:0.85rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;">${n.user_name[0]}</div>
+              <div>
+                <span style="font-weight:600;color:var(--espresso);font-size:0.95rem;">${n.user_name}</span>
+                <span style="color:var(--warm-gray);font-size:0.8rem;margin-left:0.5rem;">${time}</span>
+              </div>
+            </div>
+            <div style="color:var(--espresso);font-size:0.95rem;line-height:1.5;margin-bottom:0.5rem;">${n.note_text}</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.25rem;">
+              <span style="font-size:0.78rem;color:var(--sage);background:#f0f5ee;padding:0.2rem 0.6rem;border-radius:20px;">📖 ${secLabel}</span>
+              ${reactionSummary ? `<span style="font-size:0.85rem;color:var(--warm-gray);">${reactionSummary}</span>` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+  return `
+    <div style="max-width:720px;">
+      <p style="color:var(--warm-gray);margin:0 0 1.25rem;font-size:0.95rem;">
+        All public comments from all team members — ${publicNotes.length} total.
+      </p>
+      <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-bottom:1.5rem;align-items:center;">
+        <select onchange="_hubFilterUser=this.value;renderCurrentPage()" style="padding:0.5rem 0.75rem;border:1.5px solid var(--linen);border-radius:8px;background:white;color:var(--espresso);font-size:0.9rem;">
+          <option value="">All members</option>
+          ${userOptions}
+        </select>
+        <select onchange="_hubFilterDay=this.value;renderCurrentPage()" style="padding:0.5rem 0.75rem;border:1.5px solid var(--linen);border-radius:8px;background:white;color:var(--espresso);font-size:0.9rem;">
+          <option value="">All days</option>
+          ${dayOptions}
+        </select>
+        ${(filterUser || filterDay) ? `<button onclick="_hubFilterUser='';_hubFilterDay='';renderCurrentPage()" style="padding:0.5rem 0.9rem;border:1.5px solid var(--linen);background:white;color:var(--warm-gray);border-radius:8px;cursor:pointer;font-size:0.85rem;">✕ Clear filters</button>` : ''}
+        <span style="color:var(--warm-gray);font-size:0.85rem;margin-left:auto;">${filtered.length} comment${filtered.length !== 1 ? 's' : ''}</span>
+      </div>
+      ${notesHtml}
+    </div>
+  `;
+}
+
+let _hubFilterUser = '';
+let _hubFilterDay  = '';
+
+// ═══════════════════════════════════════════════════
 // CLEAR DAY MODAL
 // ═══════════════════════════════════════════════════
 let _pendingClearDayId = null;
@@ -2014,9 +2134,7 @@ function submitNote(sectionId, isPublic) {
 // ═══════════════════════════════════════════════════
 // LOGIN / LOGOUT
 // ═══════════════════════════════════════════════════
-document.getElementById('loginBtn').addEventListener('click', async () => {
-  const name = document.getElementById('userSelect').value;
-  if (!name) return;
+async function completeLogin(name) {
   currentUser = name;
   localStorage.setItem('lola_user', name);
 
@@ -2030,6 +2148,43 @@ document.getElementById('loginBtn').addEventListener('click', async () => {
   renderCurrentPage();
   updateSidebarDots();
   updateNotificationBadge();
+}
+
+let _pendingLoginName = null;
+
+function closePasswordModal() {
+  const modal = document.getElementById('passwordModal');
+  modal.style.display = 'none';
+  document.getElementById('passwordInput').value = '';
+  document.getElementById('passwordError').style.display = 'none';
+  _pendingLoginName = null;
+}
+
+function submitPassword() {
+  const input = document.getElementById('passwordInput').value;
+  if (input === 'Welcome123') {
+    closePasswordModal();
+    completeLogin(_pendingLoginName);
+  } else {
+    document.getElementById('passwordError').style.display = 'block';
+    document.getElementById('passwordInput').value = '';
+    document.getElementById('passwordInput').focus();
+  }
+}
+
+document.getElementById('loginBtn').addEventListener('click', async () => {
+  const name = document.getElementById('userSelect').value;
+  if (!name) return;
+  if (name === 'Ivan') {
+    _pendingLoginName = name;
+    const modal = document.getElementById('passwordModal');
+    modal.style.display = 'flex';
+    document.getElementById('passwordError').style.display = 'none';
+    document.getElementById('passwordInput').value = '';
+    setTimeout(() => document.getElementById('passwordInput').focus(), 50);
+    return;
+  }
+  await completeLogin(name);
 });
 
 document.getElementById('logoutBtn').addEventListener('click', () => {
@@ -2130,12 +2285,14 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
   });
 })();
 
-// Auto-login if returning
+// Auto-login if returning (Ivan always requires password)
 (async () => {
   const saved = localStorage.getItem('lola_user');
-  if (saved && TEAM_MEMBERS.includes(saved)) {
+  if (saved && TEAM_MEMBERS.includes(saved) && saved !== 'Ivan') {
     document.getElementById('userSelect').value = saved;
     document.getElementById('loginBtn').click();
+  } else if (saved === 'Ivan') {
+    document.getElementById('userSelect').value = 'Ivan';
   }
 })();
 </script>
