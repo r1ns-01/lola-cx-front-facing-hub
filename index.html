@@ -2163,8 +2163,9 @@ function closePasswordModal() {
 function submitPassword() {
   const input = document.getElementById('passwordInput').value;
   if (input === 'Welcome123') {
+    const name = _pendingLoginName;
     closePasswordModal();
-    completeLogin(_pendingLoginName);
+    completeLogin(name);
   } else {
     document.getElementById('passwordError').style.display = 'block';
     document.getElementById('passwordInput').value = '';
