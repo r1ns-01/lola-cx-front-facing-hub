@@ -1986,7 +1986,7 @@ function renderCommentsHub() {
   const sectionMap = {};
   COURSE.forEach(day => {
     day.sections.forEach(sec => {
-      sectionMap[sec.id] = { title: sec.title, day: day.day };
+      sectionMap[sec.id] = { title: sec.title, day: day.day, dayId: day.id };
     });
   });
 
@@ -2034,9 +2034,12 @@ function renderCommentsHub() {
               </div>
             </div>
             <div style="color:var(--espresso);font-size:0.95rem;line-height:1.5;margin-bottom:0.5rem;">${n.note_text}</div>
-            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.25rem;">
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;">
               <span style="font-size:0.78rem;color:var(--sage);background:#f0f5ee;padding:0.2rem 0.6rem;border-radius:20px;">📖 ${secLabel}</span>
-              ${reactionSummary ? `<span style="font-size:0.85rem;color:var(--warm-gray);">${reactionSummary}</span>` : ''}
+              <div style="display:flex;align-items:center;gap:0.75rem;">
+                ${reactionSummary ? `<span style="font-size:0.85rem;color:var(--warm-gray);">${reactionSummary}</span>` : ''}
+                ${sec ? `<button onclick="navigateToSection('${sec.dayId}','${n.section_id}')" style="padding:0.25rem 0.75rem;background:var(--caramel);color:white;border:none;border-radius:6px;cursor:pointer;font-size:0.8rem;font-weight:600;">Go to comment ↗</button>` : ''}
+              </div>
             </div>
           </div>
         `;
