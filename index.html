@@ -1031,7 +1031,23 @@ body {
 }
 .notif-cancel-btn:hover { background: var(--sand); }
 
-/* ─── CLEAR ALL BUTTON ─── */
+/* ─── CHECK ALL / CLEAR ALL BUTTONS ─── */
+.btn-check-all-day {
+  display: inline-block;
+  margin: 24px 8px 0 0;
+  padding: 10px 24px;
+  background: var(--sage);
+  color: white;
+  border: 2px solid var(--sage);
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.btn-check-all-day:hover {
+  opacity: 0.85;
+}
 .btn-clear-day {
   display: block;
   margin: 24px auto 0;
@@ -1779,9 +1795,15 @@ function renderDay(day) {
   });
 
   const anyChecked = day.sections.some(s => progressData[s.id]);
-  if (anyChecked) {
-    html += `<button class="btn-clear-day" onclick="clearDayProgress('${day.id}')">Clear All Progress for Day ${day.day}</button>`;
+  const allChecked = day.sections.every(s => progressData[s.id]);
+  html += '<div style="text-align:center">';
+  if (!allChecked) {
+    html += `<button class="btn-check-all-day" onclick="checkAllDay('${day.id}')">Check All for Day ${day.day}</button>`;
   }
+  if (anyChecked) {
+    html += `<button class="btn-clear-day" style="display:inline-block;margin-top:24px" onclick="clearDayProgress('${day.id}')">Clear All Progress for Day ${day.day}</button>`;
+  }
+  html += '</div>';
 
   return html;
 }
@@ -2074,6 +2096,26 @@ let _hubFilterDay  = '';
 // CLEAR DAY MODAL
 // ═══════════════════════════════════════════════════
 let _pendingClearDayId = null;
+
+async function checkAllDay(dayId) {
+  const day = COURSE.find(d => d.id === dayId);
+  const sectionIds = day.sections.map(s => s.id);
+
+  sectionIds.forEach(id => {
+    progressData[id] = true;
+    if (!allProgress[currentUser]) allProgress[currentUser] = {};
+    allProgress[currentUser][id] = true;
+  });
+  renderCurrentPage();
+  updateSidebarDots();
+
+  try {
+    await sb.from('training_progress').upsert(
+      sectionIds.map(id => ({ user_name: currentUser, section_id: id, completed: true })),
+      { onConflict: 'user_name,section_id' }
+    );
+  } catch(e) { console.warn('Check all day failed', e); }
+}
 
 function clearDayProgress(dayId) {
   const day = COURSE.find(d => d.id === dayId);
