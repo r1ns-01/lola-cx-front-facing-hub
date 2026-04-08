@@ -5,12 +5,15 @@ An internal CX training platform for the Lola Blankets team. A collaborative, si
 ## Features
 
 - **Multi-day training curriculum** with section-level progress tracking
+- **Check All button** on each Training Day to mark all sections complete at once
 - **Private & public notes** per section with @mention support
 - **Emoji reactions** on public notes (👍 ❤️ 👌 🙏)
 - **Notification system** for mentions and reactions
 - **Team progress dashboard** showing day-by-day completion across all 10 agents
+- **Comments Hub** (admin-only) — view all public notes across all users, filterable by member and training day, with a "Go to comment" jump button to navigate directly to the source section
+- **Admin password gate** — Ivan's login requires a password each session; other agents log in as before
 - **Resource hub** with direct links to Gorgias, Shopify, Notion KB, and other tools
-- **Notion integration** — each training day links out to the full curriculum in Notion
+- **Notion integration** — each training day links out to the full curriculum in Notion (styled with sage green accent)
 
 ## Tech Stack
 

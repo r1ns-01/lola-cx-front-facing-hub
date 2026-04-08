@@ -1156,7 +1156,7 @@ body {
   <div style="background:var(--cream);border-radius:16px;padding:2rem 2.5rem;max-width:360px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,0.18);text-align:center;">
     <div style="font-size:2rem;margin-bottom:0.5rem;">🔐</div>
     <h3 style="margin:0 0 0.25rem;color:var(--espresso);font-size:1.2rem;">Admin Access</h3>
-    <p style="margin:0 0 1.25rem;color:var(--warm-gray);font-size:0.9rem;">Enter your password to continue as Ivan</p>
+    <p style="margin:0 0 1.25rem;color:var(--warm-gray);font-size:0.9rem;">Enter your password to continue as <span id="passwordModalName"></span></p>
     <input type="password" id="passwordInput" placeholder="Password" autocomplete="current-password"
       style="width:100%;box-sizing:border-box;padding:0.65rem 1rem;border:1.5px solid var(--linen);border-radius:8px;font-size:1rem;background:white;color:var(--espresso);outline:none;margin-bottom:0.5rem;"
       onkeydown="if(event.key==='Enter')document.getElementById('passwordSubmit').click()">
@@ -1187,6 +1187,7 @@ body {
       <option>Cel</option>
       <option>Brittni</option>
       <option>Mike</option>
+      <option>Sherry</option>
     </select>
     <button class="btn-primary" id="loginBtn">Enter Training Hub</button>
   </div>
@@ -1323,8 +1324,9 @@ const COURSE = [
   }
 ];
 
-const TEAM_MEMBERS = ['Alvin','Ivan','Reena','Ely','Menjie','Nathan','Adel','Cel','Brittni','Mike'];
-const AVATAR_COLORS = ['#C4956A','#A8B5A0','#D4AD85','#E8C4B0','#8C847C','#A57A52','#6B8F5E','#C27070','#7A9DAF','#C4956A'];
+const TEAM_MEMBERS = ['Alvin','Ivan','Reena','Ely','Menjie','Nathan','Adel','Cel','Brittni','Mike','Sherry'];
+const AVATAR_COLORS = ['#C4956A','#A8B5A0','#D4AD85','#E8C4B0','#8C847C','#A57A52','#6B8F5E','#C27070','#7A9DAF','#C4956A','#B784A7'];
+const USER_PASSWORDS = { 'Ivan': 'Welcome123', 'Sherry': 'Welcome123' };
 
 // ═══════════════════════════════════════════════════
 // INIT DB — auto-create tables if they don't exist
@@ -2207,7 +2209,7 @@ function closePasswordModal() {
 
 function submitPassword() {
   const input = document.getElementById('passwordInput').value;
-  if (input === 'Welcome123') {
+  if (input === USER_PASSWORDS[_pendingLoginName]) {
     const name = _pendingLoginName;
     closePasswordModal();
     completeLogin(name);
@@ -2221,8 +2223,9 @@ function submitPassword() {
 document.getElementById('loginBtn').addEventListener('click', async () => {
   const name = document.getElementById('userSelect').value;
   if (!name) return;
-  if (name === 'Ivan') {
+  if (USER_PASSWORDS[name]) {
     _pendingLoginName = name;
+    document.getElementById('passwordModalName').textContent = name;
     const modal = document.getElementById('passwordModal');
     modal.style.display = 'flex';
     document.getElementById('passwordError').style.display = 'none';
@@ -2331,14 +2334,14 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
   });
 })();
 
-// Auto-login if returning (Ivan always requires password)
+// Auto-login if returning (password-protected users always require password)
 (async () => {
   const saved = localStorage.getItem('lola_user');
-  if (saved && TEAM_MEMBERS.includes(saved) && saved !== 'Ivan') {
+  if (saved && TEAM_MEMBERS.includes(saved) && !USER_PASSWORDS[saved]) {
     document.getElementById('userSelect').value = saved;
     document.getElementById('loginBtn').click();
-  } else if (saved === 'Ivan') {
-    document.getElementById('userSelect').value = 'Ivan';
+  } else if (saved && USER_PASSWORDS[saved]) {
+    document.getElementById('userSelect').value = saved;
   }
 })();
 </script>
